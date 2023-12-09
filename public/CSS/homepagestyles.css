@@ -1,0 +1,256 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Nunito";
+}
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+.nav {
+  height: 100px;
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  color: #3d49b1;
+  /* border-bottom: 1px solid #111; */
+}
+
+.nav img {
+  height: 65px;
+}
+
+.nav-two {
+  position: relative;
+  display: flex;
+  font-size: 1.35rem;
+  font-weight: 600;
+  gap: 20px;
+}
+
+.nav i {
+  /* font-weight: 100; */
+  font-size: 1.5rem;
+}
+
+.nav-two span:hover {
+  color: rgb(66, 81, 219);
+  cursor: pointer;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: space-between;
+  padding: 15px;
+  position: absolute;
+  /* background-color: red; */
+  max-height: fit-content;
+  border-radius: 4px;
+}
+#pc {
+  top: 40px;
+  width: 200px;
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.5);
+  background-color: #fff;
+}
+#fs {
+  top: 40px;
+  left: 190px;
+  width: 200px;
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.5);
+  background-color: #fff;
+}
+#fr {
+  top: 40px;
+  left: 360px;
+  width: 240px;
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.5);
+  background-color: #fff;
+}
+.hidden {
+  display: none;
+}
+.page1 {
+  height: calc(100vh - 100px);
+  width: 100%;
+  display: flex;
+  background-color: #f2f5fc;
+}
+
+.left {
+  width: 50%;
+  height: 100%;
+  padding: 4em;
+}
+.right {
+  width: 50%;
+  height: 100%;
+}
+.right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.left h1 {
+  font-size: 3.5rem;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+}
+.left h3 {
+  font-size: 1.2rem;
+  text-transform: capitalize;
+  margin-bottom: 3rem;
+}
+.left span {
+  color: lightskyblue;
+}
+.left a {
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.331);
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.5);
+  padding: 10px 40px;
+  border-radius: 8px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.left a:hover {
+  background-color: #4154f1;
+  color: white;
+  box-shadow: 0px;
+}
+
+.right img {
+  padding: 8px;
+  height: calc(100vh - 100px);
+  width: 100%;
+}
+.page2 {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+}
+.page2-left,
+.page2-right {
+  width: 50%;
+  height: 100%;
+  padding: 12rem 4rem;
+}
+.page2-left span {
+  color: #4154f1;
+  font-weight: 700;
+}
+.page2-left h3 {
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+.page2-right img {
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.page3 {
+  width: 100%;
+  height: 100vh;
+}
+.page3 .headings {
+  margin-top: 4rem;
+  /* background-color: red; */
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.cards-container {
+  height: calc(100vh - 100px);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+}
+.card {
+  /* background-color: green; */
+  width: 300px;
+  height: 75%;
+  border-radius: 10px;
+  /* border-bottom: 3px solid red; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.card img {
+  width: 250px;
+  height: 250px;
+  object-fit: cover;
+  object-position: top;
+  margin-bottom: 50px;
+}
+#one,
+#two,
+#three,
+#four {
+  transition: all 300ms ease;
+}
+#one {
+  border-bottom: 3px solid #2db6fa;
+}
+#one:hover {
+  background-color: #2db6fa;
+}
+#two {
+  border-bottom: 3px solid #f7a239;
+}
+#two:hover {
+  background-color: #f7a239;
+}
+#three {
+  border-bottom: 3px solid #09da4f;
+}
+#three:hover {
+  background-color: #09da4f;
+}
+
+#four {
+  border-bottom: 3px solid #e9222c;
+}
+#four:hover {
+  background-color: #e9222c;
+}
+.logos {
+  overflow: hidden;
+  padding: 20px 0;
+}
+.logos-slide {
+  white-space: nowrap;
+  animation: slide 20s infinite linear;
+}
+.logos:hover .logos-slide {
+  animation-play-state: paused;
+}
+.logos-slide img {
+  height: 50px;
+  margin: 0 40px;
+}
+@keyframes slide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}

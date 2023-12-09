@@ -1,0 +1,248 @@
+<% 
+    title = "New Student Registration"
+    layout('./layouts/boilerplate.ejs') 
+%>
+<form class="container" id="multiStepForm" method="post" action="/student">
+    <!-- Step 1 -->
+    <div id="step1">
+        <div class="form-group">
+            <h2><b>Personal Information</b></h2>
+            <div class="form-group">
+                <label for="fullName">Full Name:</label>
+                <input type="text" id="fullName" name="fullName" class="form-control" required>
+                <label for="prn">PRN:</label>
+                <input type="number" id="prn" name="prn" class="form-control" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="branch">Branch:</label>
+            <select id="branch" name="branch" class="form-control">
+                <option value="nil">Choose an option</option>
+                <option value="cs">Computer Engineering</option>
+                <option value="ee">Electrical Engineering</option>
+                <option value="ce">Civil Engineering</option>
+                <option value="me">Mechanical Engineering</option>
+                <option value="instru">Instrumentation Engineering</option>
+                <option value="e&tc">Electronics & Telecommunication Engineering</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="class">Class:</label>
+            <select id="class" name="class" class="form-control">
+                <option value="fy">__Select Year__</option>
+                <option value="fy">F.Y</option>
+                <option value="sy">S.Y</option>
+                <option value="ty">T.Y</option>
+                <option value="ly">L.Y</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="graduatingYear">Graduating Year:</label>
+            <input type="number" id="graduatingYear" name="graduatingYear" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="contact">Contact:</label>
+            <input type="tel" id="contact" name="contact" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="placementStatus">Placement Status:</label>
+            <input type="text" id="placementStatus" name="placementStatus" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="profilePhoto">Profile Photo:</label>
+            <input type="file" id="profilePhoto" name="profilePhoto" class="form-control-file">
+        </div>
+        <div class="form-group">
+            <label for="skills">Skills:</label>
+            <input type="text" id="skills" name="skills" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="language">Language:</label>
+            <input type="text" id="language" name="language" class="form-control" required>
+        </div>
+
+        <!-- Other Step 1 fields -->
+
+        <div class="button-container">
+            <button type="button" class="btn btn-primary" onclick="nextStep('step1')">Next</button>
+        </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div id="step2" style="display: none;">
+        <div class="form-group">
+            <h2><b>Education Information</b></h2>
+            <div class="form-group">
+                <label for="tenth">10th Percentage:</label>
+                <input type="text" id="tenth" name="tenth" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="twelfth">12th Percentage:</label>
+                <input type="text" id="twelfth" name="twelfth" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="latestCGPA">Latest CGPA:</label>
+                <input type="text" id="latestCGPA" name="latestCGPA" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="liveBacklog">Live Backlog:</label>
+                <input type="text" id="liveBacklog" name="liveBacklog" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="deadBacklog">Dead Backlog:</label>
+                <input type="text" id="deadBacklog" name="deadBacklog" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="totalBacklog">Total Backlog:</label>
+                <input type="text" id="totalBacklog" name="totalBacklog" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="gapYear" class="form-check-label">Gap Year:</label>
+                <select>
+                    <option value="nil">Choose an option</option>
+                    <option value="yes">YES</option>
+                    <option value="no">NO</option>
+                </select>
+            </div>
+            <!-- Other Step 2 fields -->
+            <div class="button-container">
+                <button type="button" class="btn btn-primary" onclick="prevStep('step2')">Previous</button>
+                <button type="button" class="btn btn-primary" onclick="nextStep('step2')">Next</button>
+            </div>
+        </div>
+    </div>
+    <div id="step3" style="display: none;">
+        <div class="form-group">
+            <h2><b>Experience Details</b></h2>
+            <h3><b>Internship</b></h3>
+            <div class="form-group">
+                <label for="internshipCompany">Company:</label>
+                <input type="text" name="internshipCompany" id="internshipCompany" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="internshipRole">Role:</label>
+                <input type="text" name="internshipRole" id="internshipRole" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="internshipDuration">Duration:</label>
+                <input type="text" name="internshipDuration" id="internshipDuration" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="internshipResponsibilities">Responsibilities:</label>
+                <textarea name="internshipResponsibilities" id="internshipResponsibilities"
+                    class="form-control"></textarea>
+            </div>
+
+            <h3><b>Job</b></h3>
+            <div class="form-group">
+                <label for="jobCompany">Company:</label>
+                <input type="text" name="jobCompany" id="jobCompany" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="jobRole">Role:</label>
+                <input type="text" name="jobRole" id="jobRole" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="jobDuration">Duration:</label>
+                <input type="text" name="jobDuration" id="jobDuration" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="jobResponsibilities">Responsibilities:</label>
+                <textarea name="jobResponsibilities" id="jobResponsibilities" class="form-control"></textarea>
+            </div>
+            <!-- Other Step 3 fields -->
+
+            <div class="button-container">
+                <button type="button" class="btn btn-primary" onclick="prevStep('step3')">Previous</button>
+                <button type="button" class="btn btn-primary" onclick="nextStep('step3')">Next</button>
+
+            </div>
+        </div>
+    </div>
+    <div id="step4" style="display: none;">
+        <div class="form-group">
+            <h2><b>Projects</b></h2>
+
+            <div class="form-group">
+                <label for="projectName">Project Name:</label>
+                <input type="text" name="projectName" id="projectName" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="projectDescription">Project Description:</label>
+                <textarea name="projectDescription" id="projectDescription" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="projectLink">Link:</label>
+                <input type="url" name="projectLink" id="projectLink" class="form-control">
+            </div>
+        </div>
+
+        <!-- Other Step 4 fields -->
+
+        <div class="button-container">
+            <button type="button" class="btn btn-primary" onclick="prevStep('step4')">Previous</button>
+            <button type="button" class="btn btn-primary" onclick="nextStep('step4')">Next</button>
+
+        </div>
+    </div>
+    <div id="step5" style="display: none;">
+        <div class="form-group">
+            <h2><b>Online Profiles</b></h2>
+
+            <div class="form-group">
+                <label for="resume">Resume:</label>
+                <input type="file" name="resume" id="resume" class="form-control-file">
+            </div>
+            <div class="form-group">
+                <label for="linkedIn">LinkedIn:</label>
+                <input type="url" name="linkedIn" id="linkedIn" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="gitHub">GitHub:</label>
+                <input type="url" name="gitHub" id="gitHub" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="personalWebsite">Personal Website:</label>
+                <input type="url" name="personalWebsite" id="personalWebsite" class="form-control">
+            </div>
+        </div>
+        <!-- Other Step 5 fields -->
+
+        <div class="button-container">
+            <button type="button" class="btn btn-primary" onclick="prevStep('step5')">Previous</button>
+            <button type="button" class="btn btn-primary" onclick="nextStep('step5')">Next</button>
+
+        </div>
+    </div>
+    <div id="step6" style="display: none;">
+        <div class="form-group">
+            <h2><b>Certifications & Images</b></h2>
+
+            <h3><b>Certifications</b></h3>
+            <div class="form-group">
+                <label for="certification">Certification:</label>
+                <input type="text" name="certification" id="certification" class="form-control">
+            </div>
+
+            <h3><b>Images</b></h3>
+            <div class="form-group">
+                <label for="images">Upload Images:</label>
+                <input type="file" name="images" id="images" class="form-control-file" multiple>
+            </div>
+            <!-- Other Step 6 fields -->
+
+            <div class="button-container">
+                <button type="button" class="btn btn-primary" onclick="prevStep('step6')">Previous</button>
+                <button type="submit" class="btn btn-info">Submit</button>
+            </div>
+        </div>
+</form>

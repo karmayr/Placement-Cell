@@ -1,0 +1,23 @@
+<% layout('./layouts/boilerplate.ejs') %>
+<% title = "Campus Drives" %>
+
+<div class="container p-3 ">
+    <main class="container d-flex flex-wrap justify-content-start gap-3   ">
+        <% for(let drive of drives) {  %>
+        <div class="card" style="width: 18rem;">
+            <img src="..." class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title"><%= drive.companyName %></h5>
+                <p class="card-text"><%= drive.driveDate.toLocaleDateString('en-GB', { 
+                    day: '2-digit', 
+                    month: '2-digit', 
+                    year: 'numeric' 
+                }) %></p>
+                <p class="card-text"><%= drive.jobDescription %></p>
+                <p class="card-text"><%= drive.salary %></p>
+                <a href="/drive/<%= drive._id %>" class="btn btn-primary">Go somewhere</a>
+            </div>
+        </div>
+        <% } %>
+    </main>
+</div>

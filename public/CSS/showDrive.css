@@ -1,0 +1,26 @@
+.job-description-container {
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 5px;
+  position: relative;
+  margin-bottom: 20px; /* Added margin-bottom property */
+}
+.apply-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+body {
+  background-image: url("https://picsum.photos/2000/1000");
+  background-clip: text;
+  background-size: 100% 40%;
+  background-repeat: no-repeat; /* Prevent image from repeating below 30% */
+}
