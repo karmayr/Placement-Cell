@@ -1,0 +1,168 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "gilroy";
+}
+html,
+body {
+  width: 100%;
+  min-height: 80%;
+  background-color: #ffdccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+a {
+  text-decoration: none;
+}
+.main {
+  margin-top: 2rem;
+  min-height: 90%;
+  width: 80%;
+  background-color: rgba(255, 255, 255, 0.566);
+  padding: 1rem;
+  border-radius: 1em;
+  display: flex;
+  flex-direction: column;
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
+    rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+}
+.upper li {
+  list-style-type: none;
+}
+.upper {
+  height: 15%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  /* background-color: green; */
+  border-bottom: 1px solid #15616d;
+}
+.upper h2 {
+  font-size: 2.5em;
+  font-weight: 600;
+  letter-spacing: -1px;
+}
+.lower {
+  height: 85%;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+.left {
+  height: 100%;
+  padding: 1rem;
+  width: 70%;
+  border-right: 1px solid #15616d;
+  /* background-color: red; */
+}
+.right {
+  padding: 1rem;
+  height: 100%;
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  /* background-color: blue; */
+}
+
+/* CSS */
+.button {
+  appearance: button;
+  backface-visibility: hidden;
+  background-color: #5168e9;
+  border-radius: 6px;
+  border-width: 0;
+  box-shadow: rgba(50, 50, 93, 0.1) 0 0 0 1px inset,
+    rgba(50, 50, 93, 0.1) 0 2px 5px 0, rgba(0, 0, 0, 0.07) 0 1px 1px 0;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  font-family: -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue",
+    Ubuntu, sans-serif;
+  font-size: 100%;
+  height: 40px;
+  line-height: 2.2;
+  margin: 12px 0 10px;
+  outline: none;
+  overflow: hidden;
+  padding: 0 25px;
+  position: relative;
+  text-align: center;
+  text-transform: none;
+  transform: translateZ(0);
+  transition: all 0.2s, box-shadow 0.08s ease-in;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: 100%;
+}
+
+.button:disabled {
+  cursor: default;
+}
+
+.button:focus {
+  box-shadow: rgba(50, 50, 93, 0.1) 0 0 0 1px inset,
+    rgba(50, 50, 93, 0.2) 0 6px 15px 0, rgba(0, 0, 0, 0.1) 0 2px 2px 0,
+    rgba(50, 151, 211, 0.3) 0 0 0 4px;
+}
+
+.basic {
+  width: 100%;
+  min-height: 30%;
+  /* background-color: #fff; */
+}
+.job-title {
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: #1e1f1ffe;
+  margin-bottom: 0.5rem;
+}
+.job-desc {
+  font-size: 16px;
+  font-weight: 400;
+  color: #2b2a2a;
+}
+.eligibility-criteria {
+  width: 100%;
+  min-height: 30%;
+  /* background-color: purple; */
+}
+.eligibility-criteria p {
+  font-size: 1.6rem;
+  font-weight: 400;
+}
+.eligibility-criteria ol,
+.selection-process ol {
+  padding: 0.3rem 1.3rem;
+}
+.eligibility-criteria li,
+.selection-process li {
+  font-size: 1.3rem;
+  font-weight: 400;
+}
+.moreinfo {
+  /* background-color: #fff; */
+  width: 100%;
+  min-height: 30%;
+}
+.moreinfo p {
+  font-size: 18px;
+  color: #2b2a2a;
+}
+.try {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.buttons {
+  display: flex;
+  gap: 1rem;
+}
+.delete-button {
+  background-color: rgb(212, 69, 69);
+}

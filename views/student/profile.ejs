@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Profile Page</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+            integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+            crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="/css/profile.css">
+    </head>
+
+    <body>
+        <main class="main">
+            <section class="upper">
+                <div class="left-profile">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZmlsZSUyMHBpY3R1cmV8ZW58MHx8MHx8fDA%3D"
+                        alt="" class="profile-photo">
+                </div>
+                <div class="middle-profile">
+                    <div class="fullname">
+                        <p><b>Yash</b></p>
+                        <p><b>Raut</b></p>
+                    </div>
+                    <div class="details">
+                        <p>email@email.com</p>
+                        <p>Computer Engineering</p>
+                        <p>Government college of engineering Jalgaon</p>
+                        <p><b>Placement Status : </b></p>
+                    </div>
+
+
+                </div>
+                <div class="right-profile">
+                    <!-- resume link when viewing 
+                    logout and edit for the user -->
+
+                    <button class="logout-btn" role="button">Resume</button>
+
+                    <!-- <button class="logout-btn" role="button">edit profile</button> -->
+                    <a href="/profile/<%= s._id %>/edit" class="logout-btn" role="button">Edit</a>
+
+                    <button class="logout-btn" role="button">log out </button>
+                </div>
+            </section>
+            <section class="lower">
+                <section class="skills">
+                    <p><b>Major Skills : <%= s.personalDetails.skills %></b></p>
+                </section>
+                <div class="inner-lower">
+                    <section class="projects">
+                        <div class="card">
+                            <p class="card-title">Project title</p>
+                            <p class="card-description">This is a simple card with a Project description.</p>
+                        </div>
+                        <div class="card">
+                            <p class="card-title">Project title</p>
+                            <p class="card-description">This is a simple card with a Project description.</p>
+                        </div>
+                    </section>
+                    <section class="socials">
+                        <i class="fa-brands fa-square-x-twitter fa-2xl" style="color: #050505;"></i>
+                        <i class="fa-brands fa-linkedin fa-2xl" style="color: #144366;"></i>
+                        <i class="fa-brands fa-square-github fa-2xl" style="color: #0f0f0f;"></i>
+                    </section>
+                </div>
+            </section>
+        </main>
+    </body>
+
+</html>
+
+
+<!-- HTML !-->
