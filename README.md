@@ -14,7 +14,7 @@ To set up Placement Cell on your local machine, follow these steps:
 1. Clone the repository:
 
 ```bash
-$ git clone https://github.com/yourusername/placement-cell.git
+$ git clone https://github.com/karmayr/Placement-Cell.git
 $ cd placement-cell
 ```
 2. Install Dependencies:
