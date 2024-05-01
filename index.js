@@ -195,8 +195,6 @@ app.post('/recruiter/register', catchAsync(async (req, res, next) => {
 
 
 
-
-
 //* Drive Routes
 app.get('/drive/register', (req, res, next) => {
     res.render("./recruiter/registerDetails.ejs");
