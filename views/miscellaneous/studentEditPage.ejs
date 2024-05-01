@@ -15,8 +15,8 @@
     <body class="p-5 d-flex justify-content-center align-items-center bg-body-secondary   ">
 
         <main class="my-5 container w-75 ">
-            <form method="post" action="" class="container needs-validation" id="multiStepForm"
-                enctype="multipart/form-data" novalidate>
+            <form action="/profile/<%= s._id %>?_method=PUT" method="post" class="container needs-validation"
+                id="multiStepForm" novalidate>
                 <!-- Step 1 -->
                 <div id="step1">
                     <div class="form-group">
@@ -26,8 +26,7 @@
                                 <div class="col">
                                     <label for="fullName" class="form-label">Full Name</label>
                                     <input type="text" id="fullName" name="personalDetails[fullName]"
-                                        class="form-control" value="<%= s.personalDetails.fullName %>" required
-                                        readonly>
+                                        class="form-control" value="<%= s.personalDetails.fullName %>" required>
                                     <div class="valid-feedback">
                                         Looks good!
                                     </div>
@@ -47,14 +46,30 @@
                     <div class="form-group mb-2">
                         <div class="row">
                             <div class="col"><label for="branch" class="form-label">Branch</label>
-                                <select id="branch" name="personalDetails[branch]" class="form-control" required>
+                                <select id="branch" name="personalDetails[branch]" class="form-control" required
+                                    disabled>
                                     <option value="nil">Choose an option</option>
-                                    <option value="Computer Engineering">Computer Engineering</option>
-                                    <option value="Electrical Engineering">Electrical Engineering</option>
-                                    <option value="Civil Engineering">Civil Engineering</option>
-                                    <option value="Mechanical Engineering">Mechanical Engineering</option>
-                                    <option value="Instrumentation Engineering">Instrumentation Engineering</option>
-                                    <option value="Electronics & Telecommunication Engineering">Electronics &
+                                    <option value="Computer Engineering"
+                                        <%= s.personalDetails.branch === 'Computer Engineering' ? 'selected' : '' %>>
+                                        Computer
+                                        Engineering</option>
+                                    <option value="Electrical Engineering"
+                                        <%= s.personalDetails.branch === 'Electrical Engineering' ? 'selected' : '' %>>
+                                        Electrical
+                                        Engineering</option>
+                                    <option value="Civil Engineering"
+                                        <%= s.personalDetails.branch === 'Civil Engineering' ? 'selected' : '' %>>Civil
+                                        Engineering</option>
+                                    <option value="Mechanical Engineering"
+                                        <%= s.personalDetails.branch === 'Mechanical Engineering' ? 'selected' : '' %>>
+                                        Mechanical
+                                        Engineering</option>
+                                    <option value="Instrumentation Engineering"
+                                        <%= s.personalDetails.branch === 'Instrumentation Engineering' ? 'selected' : '' %>>
+                                        Instrumentation Engineering</option>
+                                    <option value="Electronics & Telecommunication Engineering"
+                                        <%= s.personalDetails.branch === 'Electronics & Telecommunication Engineering' ? 'selected' : '' %>>
+                                        Electronics &
                                         Telecommunication
                                         Engineering
                                     </option>
@@ -62,12 +77,16 @@
                             </div>
                             <div class="col">
                                 <label for="class" class="form-label">Year</label>
-                                <select id="class" name="personalDetails[year]" class="form-control" required>
-                                    <option value="fy">__Select Year__</option>
-                                    <option value="F.Y">F.Y</option>
-                                    <option value="S.Y">S.Y</option>
-                                    <option value="T.Y">T.Y</option>
-                                    <option value="L.Y">L.Y</option>
+                                <select id="class" name="personalDetails[year]" class="form-control" required disabled>
+                                    <option value="na">__Select Year__</option>
+                                    <option value="F.Y" <%= s.personalDetails.year === 'F.Y' ? 'selected' : '' %>>F.Y
+                                    </option>
+                                    <option value="S.Y" <%= s.personalDetails.year === 'S.Y' ? 'selected' : '' %>>S.Y
+                                    </option>
+                                    <option value="T.Y" <%= s.personalDetails.year === 'T.Y' ? 'selected' : '' %>>T.Y
+                                    </option>
+                                    <option value="L.Y" <%= s.personalDetails.year === 'L.Y' ? 'selected' : '' %>>L.Y
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -107,13 +126,16 @@
                                     <div class="form-check col-auto">
                                         <input class="form-check-input" type="radio"
                                             name="personalDetails[placementStatus]" id="seekingStatus" value="seeking"
+                                            <%= s.personalDetails.placementStatus === 'seeking' ? 'checked' : '' %>
                                             required>
                                         <label class="form-check-label" for="seekingStatus">Seeking</label>
                                     </div>
                                     <div class="form-check col-auto">
                                         <input class="form-check-input" type="radio"
                                             name="personalDetails[placementStatus]" id="notSeekingStatus"
-                                            value="notSeeking" required>
+                                            value="notSeeking"
+                                            <%= s.personalDetails.placementStatus === 'notSeeking' ? 'checked' : '' %>
+                                            required>
                                         <label class="form-check-label" for="notSeekingStatus">Not Seeking</label>
                                     </div>
                                 </div>
@@ -148,11 +170,13 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label for="entryStatus" class="form-label">Entry Status</label>
-                                    <select id="entryStatus" name="entryStatus" class="form-control" required
-                                        onchange="toggleFields()">
+                                    <select id="entryStatus" name="entryStatus" class="form-control" required>
+                                        <!-- onchange=" toggleFields()" -->
                                         <option value="">Choose an option</option>
-                                        <option value="Regular">Regular</option>
-                                        <option value="Lateral">Lateral</option>
+                                        <option value="Regular" <%= s.entryStatus === 'Regular' ? 'selected' : '' %>>
+                                            Regular</option>
+                                        <option value="Lateral" <%= s.entryStatus === 'Lateral' ? 'selected' : '' %>>
+                                            Lateral</option>
                                     </select>
                                 </div>
                             </div>
@@ -163,16 +187,19 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group  mb-2" id="twelfthPercentageField" style="display: none;">
+                    <% if(s.entryStatus === 'Regular') {%>
+                    <div class="form-group  mb-2" id="twelfthPercentageField">
                         <label for="twelfth" class="form-label">12th Percentage</label>
                         <input type="text" id="twelfth" value="<%= s.education.twelfth %>" name="education[twelfth]"
                             class="form-control" readonly>
                     </div>
-                    <div class="form-group  mb-2" id="diplomaCGPAField" style="display: none;">
+                    <% }else if(s.entryStatus === "Lateral"){ %>
+                    <div class="form-group  mb-2" id="diplomaCGPAField">
                         <label for="diplomaCGPA" class="form-label">Diploma CGPA</label>
                         <input type="text" id="diplomaCGPA" value="<%= s.education.diploma.diplomaCGPA %>"
                             name="education[diploma][diplomaCGPA]" class="form-control" readonly>
                     </div>
+                    <% } %>
 
                     <div class="form-group  mb-2">
                         <label for="latestCGPA" class="form-label">Latest CGPA</label>
@@ -206,27 +233,32 @@
                     <h2><b>Experience Details</b></h2>
                     <div class="container">
                         <div id="experienceContainer">
+                            <% s.experiences.forEach((exp,index)=>{ %>
                             <div class="row mb-3 experience">
                                 <div class="col">
                                     <div class="form-group">
                                         <label for="company" class="form-label ">Company</label>
-                                        <input type="text" name="experiences[0][company]" class="form-control">
+                                        <input type="text" name="experiences[<%= index %>][company]"
+                                            class="form-control" value="<%= exp.company %>">
                                     </div>
                                     <div class="form-group mb-2">
                                         <div class="row">
                                             <div class="col-8">
                                                 <label for="role" class="form-label ">Role</label>
-                                                <input type="text" name="experiences[0][role]" class="form-control">
+                                                <input type="text" name="experiences[<%= index %>][role]"
+                                                    class="form-control" value="<%= exp.role %>">
                                             </div>
                                             <div class="col-4">
                                                 <label for="duration" class="form-label ">Duration</label>
-                                                <input type="text" name="experiences[0][duration]" class="form-control">
+                                                <input type="text" name="experiences[<%= index %>][duration]"
+                                                    class="form-control" value="<%= exp.duration %>">
                                             </div>
                                         </div>
                                     </div>
                                     <button type="button" class="btn btn-danger removeExperience">Remove</button>
                                 </div>
                             </div>
+                            <% }) %>
                         </div>
                         <div class="button-container mb-2">
                             <button id="addExperience" type="button" class="btn btn-primary">Add Experience</button>
@@ -241,6 +273,20 @@
                 <div id="step4" class="container" style="display: none;">
                     <h2><b>Projects</b></h2>
                     <div id="projectContainer">
+                        <% s.projects.forEach((project,index)=>{ %>
+                        <div class="form-group mb-2 project">
+                            <label for="projectName" class="form-label">Project Name</label>
+                            <input type="text" name="projects[<%= index %>][projectName]" class="form-control"
+                                value="<%= project.projectName %>">
+                            <label for="projectDescription" class="form-label">Project Description</label>
+                            <textarea name="projects[<%= index %>][projectDescription]" class="form-control"><%= project.projectDescription %>
+                            </textarea>
+                            <label for="projectLink" class="form-label">Project Link</label>
+                            <input type="url" name="projects[<%= index %>][projectLink]" class="form-control"
+                                value="<%= project.projectLink %>">
+                            <button type="button" class="mt-2 btn btn-danger removeProject">Remove</button>
+                        </div>
+                        <% }); %>
                     </div>
                     <div class="button-container mb-2">
                         <button id="addProject" type="button" class="btn btn-primary">Add Project</button>
@@ -262,19 +308,22 @@
                             <span class="input-group-text bg-dark-subtle">
                                 <i class="fa-brands fa-linkedin fa-2xl" style="color: #144366;"></i>
                             </span>
-                            <input type="url" name="onlineProfiles[linkedIn]" class="form-control">
+                            <input type="url" name="onlineProfiles[linkedIn]" value="<%= s.onlineProfiles.linkedIn %>"
+                                class="form-control">
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text bg-dark-subtle">
                                 <i class="fa-brands fa-square-github fa-2xl" style="color: #0f0f0f;"></i>
                             </span>
-                            <input type="url" name="onlineProfiles[gitHub]" class="form-control">
+                            <input type="url" name="onlineProfiles[gitHub]" value="<%= s.onlineProfiles.gitHub %>"
+                                class="form-control">
                         </div>
                         <div class="input-group mb-3  ">
                             <span class="input-group-text bg-dark-subtle">
                                 <i class="fa-brands fa-square-x-twitter fa-2xl" style="color: #050505;"></i>
                             </span>
-                            <input type="url" name="onlineProfiles[twitter]" class="form-control">
+                            <input type="url" name="onlineProfiles[twitter]" value="<%= s.onlineProfiles.twitter %>"
+                                class="form-control">
                         </div>
                         <div class="button-container">
                             <button type="button" class="btn btn-primary" onclick="prevStep('step5')">Previous</button>

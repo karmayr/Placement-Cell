@@ -16,15 +16,19 @@ const catchAsync = require("./utilities/catchAsync.js");
 const User = require("./models/user");
 const Student = require("./models/student.js");
 const Drive = require("./models/drive.js");
+const Recruiter = require("./models/recruiter.js");
 const { storage } = require("./cloudinary/app.js");
 //multer
 const multer = require('multer')
 // const upload = multer({ storage });
 const upload = multer({ dest: "uploads/" });
 const flash = require('connect-flash');
-const { request } = require('http');
 
-mongoose.connect('mongodb://127.0.0.1:27017/registerdemo')
+const passport = require('passport');
+const passportLocal = require('passport-local');
+const { isLoggedIn } = require('./utilities/middleware.js');
+
+mongoose.connect('mongodb://127.0.0.1:27017/TestDB')
     .then(() => {
         console.log("Database active");
     }
@@ -36,6 +40,7 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once("open", () => {
     console.log("connected");
 })
+
 
 //? for form data
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -65,10 +70,16 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(flash());
 
-
+//?Passport Setup
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new passportLocal(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 //!Routes
 app.use((req, res, next) => {
+    res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     next();
@@ -79,8 +90,8 @@ app.get("/", (req, res) => {
     res.render('./LandingPages/index.ejs');
 })
 
-//* Student Routes
-app.get("/student/register", (req, res, next) => {
+//* Student Routes and Profile Routes
+app.get("/student/register", isLoggedIn, (req, res, next) => {
     res.render("./student/registerDetails.ejs");
 });
 
@@ -99,6 +110,92 @@ app.post("/student/register", upload.single("image"), catchAsync(async (req, res
     req.flash('success', "student successfully registered");
     res.redirect("/");
 }));
+
+app.get('/profile/:id', catchAsync(async (req, res, next) => {
+    const student = await Student.findById(req.params.id);
+    res.render('./student/profile.ejs', { s: student });
+}));
+
+app.get('/profile/:id/edit', catchAsync(async (req, res, next) => {
+    const student = await Student.findById(req.params.id);
+    res.render("./miscellaneous/studentEditPage.ejs", { s: student });
+}));
+
+app.put('/profile/:id', upload.single('image'), catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    const {
+        personalDetails, entryStatus, education, experiences, onlineProfiles, projects
+    } = req.body;
+    const student = await Student.findByIdAndUpdate(id, {
+        personalDetails: personalDetails, entryStatus: entryStatus,
+        education: education, experiences: experiences,
+        onlineProfiles: onlineProfiles, projects: projects
+    });
+    await student.save();
+    req.flash('success', 'Changes made successfully');
+    res.redirect(`/profile/${req.params.id}`);
+}));
+
+app.get('/quiz', (req, res, next) => {
+    res.render('./miscellaneous/quiz.ejs');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//* Recruiter Routes
+app.get('/recruiter/register', (req, res, next) => {
+    res.render('./recruiter/registerRecruiter.ejs');
+})
+app.post('/recruiter/register', catchAsync(async (req, res, next) => {
+    const { companyName, companyWebsite, companyDescription,
+        recruiterName, recruiterTitle,
+        recruiterPhoneNumber, recruiterEmail } = req.body;
+    const newRecruiter = new Recruiter({
+        companyName, companyWebsite,
+        companyDescription,
+        recruiterName, recruiterPhoneNumber,
+        recruiterTitle, recruiterEmail
+    })
+    await newRecruiter.save();
+    req.flash('success', 'Registration Compeleted Successfully');
+    res.redirect('/');
+}));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //* Drive Routes
 app.get('/drive/register', (req, res, next) => {
@@ -170,16 +267,48 @@ app.delete('/drive/:id', catchAsync(async (req, res, next) => {
     res.redirect('/drive/all');
 }))
 
-//* Auth Routes
+
+
+
+
+
+//* Auth Routes 
 app.get('/login', (req, res, next) => {
     res.render('./auth/login.ejs');
 })
+app.post("/login", passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), catchAsync(async (req, res, next) => {
+    const username = req.body.username.toUpperCase();
+    req.flash('success', `Welcome to Placement Cell! ${username}`);
+    res.redirect('/');
+}));
 app.get('/register', (req, res, next) => {
     res.render('./auth/register.ejs');
 })
-app.get('/profile', (req, res, next) => {
-    res.render('./student/profile.ejs');
+app.post('/register', catchAsync(async (req, res, next) => {
+    try {
+        const { username, password, email, identity } = req.body;
+        const newUser = new User({ username, email, identity });
+        await User.register(newUser, password);
+        req.login(newUser, (err) => {
+            if (err) return next(err);
+            req.flash('success', 'registered successfully,Welcome');
+            res.redirect('/');
+        })
+    }
+    catch (e) {
+        req.flash('error', e.message);
+        res.redirect('/register');
+    }
+}));
+app.get('logout', (req, res, next) => {
+    req.logout();
+    req.flash('success', 'Logged out successfully');
+    res.redirect('/');
 })
+
+
+
+
 
 //* ADMIN Routes
 app.get('/admin/all', catchAsync(async (req, res, next) => {
@@ -228,37 +357,6 @@ app.get('/admin/student/:id', catchAsync(async (req, res, next) => {
     }
     res.render('./admin/viewStudent', { s: student });
 }));
-
-//! trial and error CRUD profile
-
-app.get('/medium', catchAsync(async (req, res, next) => {
-    const students = await Student.find({});
-    res.render('./miscellaneous/medium', { students });
-}));
-
-app.get('/profile/:id', catchAsync(async (req, res, next) => {
-    const student = await Student.findById(req.params.id);
-    res.render('./student/profile.ejs', { s: student });
-}));
-
-app.get('/profile/:id/edit', catchAsync(async (req, res, next) => {
-    const student = await Student.findById(req.params.id);
-    res.render("./miscellaneous/studentEditPage.ejs", { s: student });
-}));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //!Error routes
 app.all("*", (req, res, next) => {

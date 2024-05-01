@@ -12,6 +12,7 @@
     </head>
 
     <body>
+        <%- include('../partials/flashPartials.ejs') %>
         <main class="main">
             <section class="upper">
                 <div class="left-profile">
@@ -20,8 +21,7 @@
                 </div>
                 <div class="middle-profile">
                     <div class="fullname">
-                        <p><b>Yash</b></p>
-                        <p><b>Raut</b></p>
+                        <p><b><%= s.personalDetails.fullName %></b></p>
                     </div>
                     <div class="details">
                         <p>email@email.com</p>

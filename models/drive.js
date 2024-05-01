@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const { Schema } = mongoose;
 // Define job schema
 const driveSchema = new mongoose.Schema({
     companyName: {
@@ -58,10 +58,10 @@ const driveSchema = new mongoose.Schema({
     companyDescription: {
         type: String
     },
-    // author: {
-    //     type: Schema.Types.ObjectId,
-    //     ref: "User"
-    // },
+    author: {
+        type: Schema.Types.ObjectId,
+        ref: "Recruiter"
+    }
 });
 const drive = mongoose.model('drive', driveSchema);
 

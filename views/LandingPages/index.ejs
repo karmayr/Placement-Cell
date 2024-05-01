@@ -11,7 +11,7 @@
 
     <body>
         <main class="container-fluid ">
-            <% include('../partials/flashPartials.ejs') %>
+            <%- include('../partials/flashPartials.ejs') %>
             <h1>This is the Landing Page</h1>
             <div>
                 <a href="/student/register">Student</a>
@@ -20,11 +20,19 @@
                 <br>
                 <a href="/drive/all">All drives</a>
                 <br>
-                <a href="/profile">static profile</a>
                 <br>
-                <a href="/login">login</a>
-                <br>
-                <a href="/register">register</a>
+                <div>
+                    <% if(!currentUser){ %>
+                    <a href="/login">login</a>
+                    <br>
+                    <a href="/register">register</a>
+                    <br>
+                    <% }else{%>
+                    <b><a href="#"><%= currentUser.username %></a></b>
+                    <a href="/logout">logout</a>
+                    <% } %>
+
+                </div>
             </div>
         </main>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

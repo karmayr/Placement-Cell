@@ -13,29 +13,48 @@
 
     <body>
 
-        <section class="sign-in">
-            <div class="container">
-                <div class="signin-content">
-                    <div class="signin-image">
-                        <figure><img src="/images/signin-image.jpg" alt="sing up image"></figure>
-                        <a href="/register" class="signup-image-link">Register</a>
+        <section class="vh-100">
+            <div class="container-fluid h-custom">
+                <div class="row d-flex justify-content-start   align-items-center h-100">
+                    <div class="col-md-9 col-lg-6 col-xl-5  d-flex justify-content-center align-items-center ">
+                        <img src="./images/signin-image.jpg" class="img-fluid" alt="image">
                     </div>
+                    <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 ">
+                        <form method="post" action="/login">
 
-                    <div class="signin-form">
-                        <h2 class="form-title">Sign in</h2>
-                        <form method="POST" class="register-form" id="login-form" action="">
-                            <div class="form-group">
-                                <label for="your_name"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                                <input type="text" name="your_name" id="your_name" required placeholder="Your Name" />
+                            <div class="flashMsg">
+                                <%- include('../partials/flashPartials') %>
                             </div>
-                            <div class="form-group">
-                                <input id="password" type="password" placeholder="Password" required>
-                                <i style="margin-top: .7rem;" class='bx bxs-lock-alt' id="lock-close"></i>
-                                <i onclick="" class='bx bxs-lock-open-alt' style="display: none;" id="lock-open"></i>
+                            <div class="divider d-flex align-items-center my-4">
+                                <p class="text-center fw-bold mx-3 mb-0">Log In To Placement Cell</p>
                             </div>
-                            <div class="form-group form-button">
-                                <input type="submit" name="signin" id="signin" class="form-submit" value="Log in" />
+
+                            <!-- Email input -->
+                            <div data-mdb-input-init class="form-outline mb-4">
+                                <input type="text" id="Username" class="form-control form-control-lg" name="username"
+                                    placeholder="Enter your username" />
+                                <label class="form-label" for="Username">Username</label>
                             </div>
+
+                            <!-- Password input -->
+                            <div data-mdb-input-init class="form-outline mb-3">
+                                <input type="password" id="form3Example4" class="form-control form-control-lg"
+                                    placeholder="Enter password" name="password" />
+                                <label class="form-label" for="form3Example4">Password</label>
+                            </div>
+
+                            <div>
+                                <a href="#!" class="text-body float-end">Forgot password?</a>
+                            </div>
+
+                            <div class="text-center text-lg-start mt-4 pt-2">
+                                <button type="submit" data-mdb-button-init data-mdb-ripple-init
+                                    class="btn btn-primary btn-lg"
+                                    style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
+                                <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="/register"
+                                        class="link-danger">Register</a></p>
+                            </div>
+
                         </form>
                     </div>
                 </div>

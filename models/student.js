@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const { Schema } = mongoose;
 const studentSchema = new mongoose.Schema({
 
     personalDetails: {
@@ -66,7 +66,11 @@ const studentSchema = new mongoose.Schema({
         linkedIn: { type: String },
         gitHub: { type: String },
         twitter: { type: String }
-    }
+    },
+    author: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    },
 });
 
 const Student = mongoose.model('Student', studentSchema);

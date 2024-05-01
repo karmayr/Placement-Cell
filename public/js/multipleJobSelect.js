@@ -2,60 +2,37 @@ $(document).ready(function () {
     let experienceCount = 0; // Initialize to 0
     const maxExperiences = 3;
 
-    // Hide the "Remove" button initially
-    $('.removeExperience').hide();
-
-    // Function to add a new job experience
+    // Function to add a new experience
     function addExperience() {
         if (experienceCount < maxExperiences) {
             experienceCount++;
             const experienceTemplate = `
-                <div class="row mb-3 experience">
-                    <div class="col">
-                        <div class="form-group">
-                            <label for="company" class="form-label">Company</label>
-                            <input type="text" name="experiences[${experienceCount - 1}][company]" class="form-control">
-                        </div>
-                        <div class="form-group mb-2">
-                                        <div class="row">
-                                            <div class="col-8">
-                                                <label for="role" class="form-label ">Role</label>
-                                                <input type="text" name="experiences[${experienceCount - 1}][company]"  class="form-control">
-                                            </div>
-                                            <div class="col-4">
-                                                <label for="duration" class="form-label ">Duration</label>
-                                                <input type="text" name="experiences[${experienceCount - 1}][company]"  class="form-control">
-                                            </div>
-                                        </div>
-                                    </div>
-                        <button type="button" class="btn btn-danger removeExperience">Remove</button>
-                    </div>
+                <div class="experience">
+                    <label for="company${experienceCount}">Company:</label>
+                    <input type="text" name="experiences[${experienceCount}][company]" id="company${experienceCount}" class="form-control">
+                    <label for="role${experienceCount}">Role:</label>
+                    <input type="text" name="experiences[${experienceCount}][role]" id="role${experienceCount}" class="form-control">
+                    <label for="duration${experienceCount}">Duration:</label>
+                    <input type="text" name="experiences[${experienceCount}][duration]" id="duration${experienceCount}" class="form-control">
+                    <button type="button" class="my-3 btn btn-danger removeExperience">Remove</button>
                 </div>
             `;
             $('#experienceContainer').append(experienceTemplate);
-            $('.removeExperience').show(); // Show remove button
         } else {
             alert("Maximum 3 experiences allowed.");
         }
     }
 
-    // Function to remove a job experience
-    function removeExperience() {
+    // Function to remove an experience
+    $(document).on('click', '.removeExperience', function () {
         $(this).closest('.experience').remove();
         experienceCount--;
-        if (experienceCount === 0) {
-            $('.removeExperience').hide(); // Hide remove button if no experiences left
-        }
-    }
-
-    // Event listener for "Add Experience" button
-    $('#addExperience').click(function () {
-        addExperience();
     });
 
-    // Event listener for dynamically added "Remove" buttons
-    $(document).on('click', '.removeExperience', removeExperience);
+    // Event listener for "Add Experience" button
+    $('#addExperience').click(addExperience);
 });
+
 
 $(document).ready(function () {
     let projectCount = 1; // Initialize to 0
