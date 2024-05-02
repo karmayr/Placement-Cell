@@ -33,7 +33,7 @@ const recruiterSchema = new mongoose.Schema({
     companyPhoto: {
         type: String,
     },
-    Rid: {
+    author: {
         type: Schema.Types.ObjectId,
         ref: 'User'
     }

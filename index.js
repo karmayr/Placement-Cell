@@ -46,6 +46,18 @@ db.once("open", () => {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(methodOverride('_method'));
+
+
+//? Middleware to trim the form data
+app.use((req, res, next) => {
+    if (req.body && req.body.username) {
+        req.body.username = req.body.username.trim();
+    }
+    next();
+});
+
+
+
 //?public directory for views
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -85,10 +97,17 @@ app.use((req, res, next) => {
     next();
 })
 
-//* Landing page
+//* Landing page and Dashboards
 app.get("/", (req, res) => {
     res.render('./LandingPages/index.ejs');
 })
+
+app.get('/dashboard', isLoggedIn, (req, res, next) => {
+    res.render('./LandingPages/dashboard.ejs');
+})
+
+
+
 
 //* Student Routes and Profile Routes
 app.get("/student/register", isLoggedIn, (req, res, next) => {
@@ -96,17 +115,25 @@ app.get("/student/register", isLoggedIn, (req, res, next) => {
 });
 
 // upload.single('image')
-app.post("/student/register", upload.single("image"), catchAsync(async (req, res, next) => {
+app.post("/student/register", isLoggedIn, upload.single("image"), catchAsync(async (req, res, next) => {
     const {
         personalDetails, entryStatus, education, experiences, onlineProfiles, projects
     } = req.body;
     const newStudent = new Student({
         personalDetails: personalDetails, entryStatus: entryStatus,
         education: education, experiences: experiences,
-        onlineProfiles: onlineProfiles, projects: projects
+        onlineProfiles: onlineProfiles, projects: projects,
+        author: req.user._id
     });
     // newStudent.personalDetails.profilePhoto = ({ url: req.file.path, filename: req.file.filename })
-    await newStudent.save();
+    const success = await newStudent.save();
+    if (!success) {
+        req.flash('error', 'There was something wrong, Try again')
+        return res.redirect('/login');
+    }
+    req.user.registered = true;
+    req.user.sID = success._id;
+    req.user.save();
     req.flash('success', "student successfully registered");
     res.redirect("/");
 }));
@@ -163,10 +190,10 @@ app.get('/quiz', (req, res, next) => {
 
 
 //* Recruiter Routes
-app.get('/recruiter/register', (req, res, next) => {
+app.get('/recruiter/register', isLoggedIn, (req, res, next) => {
     res.render('./recruiter/registerRecruiter.ejs');
 })
-app.post('/recruiter/register', catchAsync(async (req, res, next) => {
+app.post('/recruiter/register', isLoggedIn, catchAsync(async (req, res, next) => {
     const { companyName, companyWebsite, companyDescription,
         recruiterName, recruiterTitle,
         recruiterPhoneNumber, recruiterEmail } = req.body;
@@ -174,14 +201,19 @@ app.post('/recruiter/register', catchAsync(async (req, res, next) => {
         companyName, companyWebsite,
         companyDescription,
         recruiterName, recruiterPhoneNumber,
-        recruiterTitle, recruiterEmail
+        recruiterTitle, recruiterEmail,
+        author: req.user._id,
     })
-    await newRecruiter.save();
+    const success = await newRecruiter.save();
+    if (!success) {
+        req.flash('error', 'Something went wrong');
+        return res.redirect('/login');
+    }
+    req.user.Rid = success._id;
+    req.user.registered = true;
     req.flash('success', 'Registration Compeleted Successfully');
     res.redirect('/');
 }));
-
-
 
 
 
@@ -274,11 +306,20 @@ app.delete('/drive/:id', catchAsync(async (req, res, next) => {
 app.get('/login', (req, res, next) => {
     res.render('./auth/login.ejs');
 })
-app.post("/login", passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), catchAsync(async (req, res, next) => {
-    const username = req.body.username.toUpperCase();
-    req.flash('success', `Welcome to Placement Cell! ${username}`);
-    res.redirect('/');
-}));
+app.post("/login",
+    passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }),
+    catchAsync(async (req, res, next) => {
+        if (req.user.registered === true) {
+            return res.redirect('/dashboard');
+        } else if (req.user.registered === false && req.user.identity === 'student') {
+            req.flash('success', 'Have to Complete registration first.');
+            return res.redirect('/student/register');
+        } else if (req.user.registered === false && req.user.identity === 'recruiter') {
+            req.flash('success', 'Have to Complete registration first.');
+            return res.redirect('/recruiter/register');
+        }
+        res.redirect('/');
+    }));
 app.get('/register', (req, res, next) => {
     res.render('./auth/register.ejs');
 })
@@ -289,6 +330,14 @@ app.post('/register', catchAsync(async (req, res, next) => {
         await User.register(newUser, password);
         req.login(newUser, (err) => {
             if (err) return next(err);
+            const { identity } = req.user;
+            if (identity === 'student') {
+                req.flash('success', "Completing the registration");
+                return res.redirect('/student/register');
+            } else if (identity === 'recruiter') {
+                req.flash('success', "Completing the registration");
+                return res.redirect('/recruiter/register');
+            }
             req.flash('success', 'registered successfully,Welcome');
             res.redirect('/');
         })
@@ -298,8 +347,10 @@ app.post('/register', catchAsync(async (req, res, next) => {
         res.redirect('/register');
     }
 }));
-app.get('logout', (req, res, next) => {
-    req.logout();
+app.get('/logout', (req, res, next) => {
+    req.logout((err) => {
+        if (err) return next(err);
+    });
     req.flash('success', 'Logged out successfully');
     res.redirect('/');
 })

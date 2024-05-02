@@ -31,7 +31,7 @@
     </head>
 
     <body>
-        <div class="bg-secondary min-vh-100 ">
+        <div class="bg-secondary min-vh-100 d-flex justify-content-center align-items-center ">
             <div class="container py-2">
                 <div class="container form bg-light px-5 py-3 rounded-4">
                     <form action="/recruiter/register" method="post">
@@ -43,18 +43,15 @@
                             </div>
                             <div class="right">
                                 <label for="companyPhoto" style="position: relative;">
-                                    <img id="preview"
-                                        src="https://images.unsplash.com/photo-1711994872181-1e112e5e18e0?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8"
-                                        alt="Preview">
+                                    <img id="preview" src="/images/defaultProfile.png" alt="Preview">
                                     <input type="file" id="companyPhoto" name="companyPhoto" accept="image/*"
                                         style="position: absolute; top: 0; left: 0; opacity: 0; width: 100%; height: 100%;"
                                         onchange="previewPhoto(event) ">
                                 </label>
-
                             </div>
                         </div>
 
-                        <div class="divider d-flex align-items-center my-4">
+                        <div class="divider d-flex align-items-center">
                             <p class="text-center fw-bold mx-3 mb-0">Company Information</p>
                         </div>
                         <div class="row">

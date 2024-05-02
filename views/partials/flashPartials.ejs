@@ -1,12 +1,29 @@
 <% if (success && success.length){ %>
-<div class="alert alert-success  alert-dismissible fade show" role="alert">
+<div id="success-message" class="alert alert-success alert-dismissible fade show" role="alert">
     <strong><%= success %></strong>
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
+<script>
+    setTimeout(function () {
+        document.getElementById('success-message').style.opacity = '0';
+        setTimeout(function () {
+            document.getElementById('success-message').remove();
+        }, 1000); // Fading duration
+    }, 20000); // Message display duration (30 seconds)
+</script>
 <% } %>
+
 <% if (error && error.length){ %>
-<div class="alert alert-danger  alert-dismissible fade show" role="alert">
+<div id="error-message" class="alert alert-danger alert-dismissible fade show" role="alert">
     <strong><%= error %></strong>
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
+<script>
+    setTimeout(function () {
+        document.getElementById('error-message').style.opacity = '0';
+        setTimeout(function () {
+            document.getElementById('error-message').remove();
+        }, 1000); // Fading duration
+    }, 20000); // Message display duration (30 seconds)
+</script>
 <% } %>
