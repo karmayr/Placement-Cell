@@ -35,13 +35,14 @@
                 <div class="right-profile">
                     <!-- resume link when viewing 
                     logout and edit for the user -->
-
-                    <button class="logout-btn" role="button">Resume</button>
-
-                    <!-- <button class="logout-btn" role="button">edit profile</button> -->
+                    <% if(currentUser.sID.equals(s._id)) {%>
                     <a href="/profile/<%= s._id %>/edit" class="logout-btn" role="button">Edit</a>
+                    <a href="/logout" class="logout-btn">log out</a>
+                    <% }else{ %>
+                    <button class="logout-btn" role="button">Resume </button>
+                    <% } %>
 
-                    <button class="logout-btn" role="button">log out </button>
+
                 </div>
             </section>
             <section class="lower">

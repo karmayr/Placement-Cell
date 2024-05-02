@@ -135,7 +135,7 @@ app.post("/student/register", isLoggedIn, upload.single("image"), catchAsync(asy
     req.user.sID = success._id;
     req.user.save();
     req.flash('success', "student successfully registered");
-    res.redirect("/");
+    res.redirect("/dashboard");
 }));
 
 app.get('/profile/:id', catchAsync(async (req, res, next) => {
@@ -211,6 +211,7 @@ app.post('/recruiter/register', isLoggedIn, catchAsync(async (req, res, next) =>
     }
     req.user.Rid = success._id;
     req.user.registered = true;
+    req.user.save();
     req.flash('success', 'Registration Compeleted Successfully');
     res.redirect('/');
 }));
