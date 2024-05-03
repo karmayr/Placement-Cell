@@ -17,6 +17,8 @@ const User = require("./models/user");
 const Student = require("./models/student.js");
 const Drive = require("./models/drive.js");
 const Recruiter = require("./models/recruiter.js");
+const Otp = require("./models/otp.js");
+const PasswordReset = require("./models/passwordReset.js");
 const { storage } = require("./cloudinary/app.js");
 //multer
 const multer = require('multer')
@@ -27,6 +29,9 @@ const flash = require('connect-flash');
 const passport = require('passport');
 const passportLocal = require('passport-local');
 const { isLoggedIn } = require('./utilities/middleware.js');
+const mailer = require("./utilities/mailer.js");
+const { genrateOtp, otpTimeout, otpExpiryFiveMin } = require("./utilities/helper.js");
+const randomString = require('randomstring');
 
 mongoose.connect('mongodb://127.0.0.1:27017/TestDB')
     .then(() => {
@@ -326,7 +331,12 @@ app.get('/register', (req, res, next) => {
 })
 app.post('/register', catchAsync(async (req, res, next) => {
     try {
-        const { username, password, email, identity } = req.body;
+        const { username, password, confirmPassword, email, identity } = req.body;
+        if (password != confirmPassword) {
+            data = req.body;
+            req.flash('error', 'Passwords do not match');
+            res.redirect('/register', { data })
+        }
         const newUser = new User({ username, email, identity });
         await User.register(newUser, password);
         req.login(newUser, (err) => {
@@ -344,6 +354,10 @@ app.post('/register', catchAsync(async (req, res, next) => {
         })
     }
     catch (e) {
+        if (e.code === 11000 && e.keyPattern.email) {
+            req.flash('error', 'User with email address already exits')
+            return res.redirect('/login');
+        }
         req.flash('error', e.message);
         res.redirect('/register');
     }
@@ -355,6 +369,127 @@ app.get('/logout', (req, res, next) => {
     req.flash('success', 'Logged out successfully');
     res.redirect('/');
 })
+app.get('/forgot-password', (req, res) => {
+    res.render('./auth/forgotPassword')
+});
+app.post('/forgot-password', catchAsync(async (req, res) => {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+        req.flash('error', 'No user with the email');
+        return res.redirect("/login");
+    }
+    const token = randomString.generate();
+
+    subject = 'Reset Password'
+    content = `<p>To reset your password, <a href="http://localhost:3000/reset-password?token=${token}">Click Here</a></p>`
+
+    await PasswordReset.deleteMany({ user_id: user._id })
+    const passReset = new PasswordReset({
+        user_id: user._id,
+        token: token
+    })
+    await passReset.save();
+    mailer.sendMail(email, subject, content);
+    req.flash('success', 'Email sent For Changing Password');
+    res.redirect('/login');
+
+}));
+app.get('/reset-password', catchAsync(async (req, res, next) => {
+
+    if (req.query.token == undefined) {
+        next(new AppError('Page Not Found', 404));
+    }
+    const Data = await PasswordReset.findOne({ token: req.query.token })
+    if (!Data) {
+        next(new AppError('Page Not Found', 404));
+    }
+    res.render('./auth/resetPassword.ejs', { Data })
+}));
+
+
+app.post('/reset-password', catchAsync(async (req, res, next) => {
+    const { user_id, password, cpassword } = req.body;
+    const Data = await PasswordReset.findOne({ user_id })
+    if (password != cpassword) {
+        return res.render('./auth/resetPassword', { Data, message: 'not-match' })
+    }
+
+    const user = await User.findOne({ _id: user_id });
+    user.setPassword(password, () => {
+        user.save();
+    })
+    await PasswordReset.deleteMany({ user_id });
+    req.flash('success', "password changed successfully");
+    res.redirect('/login')
+
+}));
+
+
+app.post('/send-otp', catchAsync(async (req, res, next) => {
+    email = 'yashraut25122002@gmail.com';
+    const userInfo = await User.find({ email });
+    if (!userInfo) {
+        return res.send('Email Does Not Exist');
+    }
+    if (userInfo.isVerified === true) {
+        return res.send('Email Already Verified');
+    }
+
+    const otp = await genrateOtp();
+
+    const oldOtp = await Otp.findOne({ user_id: req.user._id })
+
+    if (oldOtp) {
+        const sendNewOtp = await otpTimeout(oldOtp.timestamp);
+        if (!sendNewOtp) return res.send('Too many requests,Try after sometime');
+    }
+    const currentDate = new Date();
+    await Otp.findOneAndUpdate(
+        { user_id: req.user._id },
+        { otp, timestamp: currentDate.getTime() },
+        { upsert: true, new: true, setDefaultsOnInsert: true },
+    )
+
+    subject = 'otp verification';
+    content = '<p>This is the Otp <b>' + otp + '</b></p>';
+    mailer.sendMail(email, subject, content);
+    res.redirect('/');
+}));
+app.post('/verify-otp', catchAsync(async (req, res, next) => {
+    const { otp } = req.body;
+    const checkOtp = await Otp.findOne({
+        user_id: req.user._id,
+        otp: otp,
+    })
+    if (!checkOtp) {
+        req.flash('error', "wrong Otp");
+        return res.redirect('/');
+    }
+    const expired = await otpExpiryFiveMin(checkOtp.timestamp);
+    if (expired) {
+        req.flash('error', "Otp has Expired!");
+        return res.redirect('/');
+    }
+    req.user.isVerified = true;
+    req.user.save();
+    res.send('verified')
+}));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

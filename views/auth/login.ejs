@@ -20,7 +20,7 @@
                         <img src="./images/signin-image.jpg" class="img-fluid" alt="image">
                     </div>
                     <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 ">
-                        <form method="post" action="/login">
+                        <form method="post" action="/login" class="needs-validation" novalidate>
 
                             <div class="flashMsg">
                                 <%- include('../partials/flashPartials') %>
@@ -32,19 +32,19 @@
                             <!-- Email input -->
                             <div data-mdb-input-init class="form-outline mb-4">
                                 <input type="text" id="Username" class="form-control form-control-lg" name="username"
-                                    placeholder="Enter your username" />
+                                    placeholder="Enter your username" required />
                                 <label class="form-label" for="Username">Username</label>
                             </div>
 
                             <!-- Password input -->
                             <div data-mdb-input-init class="form-outline mb-3">
                                 <input type="password" id="form3Example4" class="form-control form-control-lg"
-                                    placeholder="Enter password" name="password" />
+                                    placeholder="Enter password" name="password" required />
                                 <label class="form-label" for="form3Example4">Password</label>
                             </div>
 
                             <div>
-                                <a href="#!" class="text-body float-end">Forgot password?</a>
+                                <a href="/forgot-password" class="text-body float-end">Forgot password?</a>
                             </div>
 
                             <div class="text-center text-lg-start mt-4 pt-2">
@@ -65,7 +65,24 @@
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
             crossorigin="anonymous"></script>
         <script src="./js/login-register.js"></script>
+        <script>(() => {
+                'use strict'
 
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                const forms = document.querySelectorAll('.needs-validation')
+
+                // Loop over them and prevent submission
+                Array.from(forms).forEach(form => {
+                    form.addEventListener('submit', event => {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+            })()</script>
 
     </body>
 

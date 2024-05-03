@@ -28,6 +28,10 @@ const userSchema = new mongoose.Schema({
     Rid: {
         type: Schema.Types.ObjectId,
         ref: 'recruiter',
+    },
+    isVerified: {
+        type: Boolean,
+        default: false,
     }
 });
 

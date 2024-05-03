@@ -31,9 +31,31 @@
                     <br>
                     <% }else{%>
                     <b><a href="#"><%= currentUser.username %></a></b>
+                    <br>
+                    <form action="/send-otp" method="post">
+                        <button type="submit">SendOTP</button>
+                    </form>
+                    <br>
                     <a href="/logout">logout</a>
                     <% } %>
                 </div>
+            </div>
+            <br>
+            <div>
+                <h1>OTP verification</h1>
+                <form action="/verify-otp" method="post">
+                    <input type="text" name="otp">
+                    <button type="submit">submit</button>
+                </form>
+            </div>
+            <br>
+            <div>
+                <h1>forgot password</h1>
+                <form action="/forgot-password" method="post">
+                    <input type="email" name="email" placeholder="Email">
+                    <p>Enter Email to Reset your password</p>
+                    <button type="submit">Submit</button>
+                </form>
             </div>
         </main>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
