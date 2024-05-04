@@ -18,13 +18,16 @@
                     <h2><%= currentDrive.companyName %></h2>
                 </li>
                 <li>
-                    <!-- <button class="btn" role="button">Apply</button> -->
+                    <% if(currentDrive.author.equals(currentUser._id)) {%>
                     <div class="buttons">
                         <form action="/drive/<%= currentDrive._id %>?_method=DELETE" method="post">
                             <button class="button delete-button" type="submit" role="button">Delete</button>
                         </form>
                         <a href="/drive/<%= currentDrive._id %>/edit" class="button">Edit</a>
                     </div>
+                    <% } else{%>
+                    <button class="button " role="button">Apply</button>
+                    <% } %>
                 </li>
             </div>
             <div class="lower">

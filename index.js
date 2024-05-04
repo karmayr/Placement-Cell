@@ -33,6 +33,9 @@ const mailer = require("./utilities/mailer.js");
 const { genrateOtp, otpTimeout, otpExpiryFiveMin } = require("./utilities/helper.js");
 const randomString = require('randomstring');
 
+const cron = require('node-cron');
+
+
 mongoose.connect('mongodb://127.0.0.1:27017/TestDB')
     .then(() => {
         console.log("Database active");
@@ -251,7 +254,8 @@ app.post('/drive/register', catchAsync(async (req, res, next) => {
         numberOfStages: numberOfStages, selectionProcess: spArray,
         requiredSkills: srArray, contactEmail: contactEmail,
         contactPhone: contactPhone,
-        companyDescription: companyDescription
+        companyDescription: companyDescription,
+        author: req.user._id
     })
     await newDrive.save();
     req.flash('success', 'Drive created successfully');
@@ -337,6 +341,7 @@ app.post('/register', catchAsync(async (req, res, next) => {
             req.flash('error', 'Passwords do not match');
             res.redirect('/register', { data })
         }
+
         const newUser = new User({ username, email, identity });
         await User.register(newUser, password);
         req.login(newUser, (err) => {
@@ -355,7 +360,7 @@ app.post('/register', catchAsync(async (req, res, next) => {
     }
     catch (e) {
         if (e.code === 11000 && e.keyPattern.email) {
-            req.flash('error', 'User with email address already exits')
+            req.flash('error', 'User with email address already exits, Try Forgot Password')
             return res.redirect('/login');
         }
         req.flash('error', e.message);
@@ -427,13 +432,16 @@ app.post('/reset-password', catchAsync(async (req, res, next) => {
 
 
 app.post('/send-otp', catchAsync(async (req, res, next) => {
-    email = 'yashraut25122002@gmail.com';
+    const { email } = req.body;
     const userInfo = await User.find({ email });
     if (!userInfo) {
-        return res.send('Email Does Not Exist');
+        req.flash('error', 'No user with email');
+        req.logout();
+        res.redirect('/login');
     }
     if (userInfo.isVerified === true) {
-        return res.send('Email Already Verified');
+        req.flash('success', 'Email already verified');
+        return res.redirect('/');
     }
 
     const otp = await genrateOtp();
@@ -442,7 +450,10 @@ app.post('/send-otp', catchAsync(async (req, res, next) => {
 
     if (oldOtp) {
         const sendNewOtp = await otpTimeout(oldOtp.timestamp);
-        if (!sendNewOtp) return res.send('Too many requests,Try after sometime');
+        if (!sendNewOtp) {
+            req.flash('error', 'Too many requests, Wait for sometime');
+            return res.redirect('/');
+        }
     }
     const currentDate = new Date();
     await Otp.findOneAndUpdate(
@@ -454,10 +465,19 @@ app.post('/send-otp', catchAsync(async (req, res, next) => {
     subject = 'otp verification';
     content = '<p>This is the Otp <b>' + otp + '</b></p>';
     mailer.sendMail(email, subject, content);
-    res.redirect('/');
+    req.flash('success', 'OTP send to the registered user email address');
+    res.redirect('/verify-otp');
 }));
+
+app.get('/verify-otp', (req, res) => {
+    res.render('./auth/verifyOtpEmail.ejs');
+})
 app.post('/verify-otp', catchAsync(async (req, res, next) => {
     const { otp } = req.body;
+    if (!otp) {
+        req.flash('error', "OTP is required")
+        return res.redirect('/verify-otp');
+    }
     const checkOtp = await Otp.findOne({
         user_id: req.user._id,
         otp: otp,
@@ -473,16 +493,26 @@ app.post('/verify-otp', catchAsync(async (req, res, next) => {
     }
     req.user.isVerified = true;
     req.user.save();
-    res.send('verified')
+    req.flash('success', "Email Verified Successfully");
+    res.redirect('/')
 }));
 
 
 
 
+//! Using Node Cron to delete the users which do not verify their email within 3 days
+// Schedule task to run daily at midnight
+// ? the format is MIN HOURS Day MOnth Week
+cron.schedule('0 0 * * *', async () => {
+    try {
+        const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
+        await User.deleteMany({ isVerified: false, createdAt: { $lt: threeDaysAgo } });
+    } catch (err) {
+        console.error('Error deleting accounts:', err);
+    }
+});
 
-
-
-
+//!
 
 
 

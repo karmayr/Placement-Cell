@@ -1,0 +1,8 @@
+<div class="bg-dark  pt-3 d-flex justify-content-center   align-items-center" style="height: 60px;">
+    <p class="text-warning">Email Not Verified,Account will be deleted in 3 days,
+    <form action="/send-otp" method="post" class="mb-3">
+        <button class="btn btn-link link-danger" type="submit">verify here</button>
+        <input type="hidden" value="<%= currentUser.email %>" name="email" required>
+    </form>
+    </p>
+</div>
