@@ -11,6 +11,7 @@
     </head>
 
     <body>
+        <%- include('../partials/navbar.ejs') %>
         <main class="main">
             <%- include('../partials/flashPartials.ejs') %>
             <div class="upper">
@@ -25,11 +26,23 @@
                         </form>
                         <a href="/drive/<%= currentDrive._id %>/edit" class="button">Edit</a>
                     </div>
-                    <% } else{%>
-                    <button class="button " role="button">Apply</button>
+                    <% } else if(currentDrive.appliedStudents.map(s => s.toString()).includes(currentUser.sID.toString())){%>
+                    <div class="buttons">
+                        <button disabled="disabled" class="btn btn-secondary px-3">Applied</button>
+                        <a href="" class="btn  btn-info">Track Application</a>
+                    </div>
+                    <% }else{ %>
+                    <div class="buttons">
+                        <form action="/apply/<%= currentDrive._id %>" method="post">
+                            <button class="button " role="button">Apply</button>
+                        </form>
+                    </div>
                     <% } %>
                 </li>
             </div>
+
+
+
             <div class="lower">
                 <div class="left">
                     <section class="basic">

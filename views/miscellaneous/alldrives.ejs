@@ -10,8 +10,19 @@
     </head>
 
     <body>
-        <main class=" container p-3 ">
+        <%- include('../partials/navbar.ejs') %>
+        <main class=" container p-1  ">
             <%- include('../partials/flashPartials.ejs') %>
+            <% if(drives.length < 1){ %>
+            <div class="container d-flex justify-content-center align-items-center flex-column bg-body-secondary rounded-2"
+                style="height: calc(100vh - 150px);">
+                <h3>No On Going Drive Yet</h3>
+                <form action="#" class="text-start  ">
+                    <button type="submit" class="btn btn-info btn-sm">Notify Me</button>
+                    <p class="form-text">notify me when a drive gets started.</p>
+                </form>
+            </div>
+            <% }else{ %>
             <h1>Upcoming Drives</h1>
             <div class="container d-flex gap-3 flex-wrap">
                 <% for (drive of drives) {%>
@@ -32,6 +43,7 @@
                 </div>
                 <% } %>
             </div>
+            <% } %>
         </main>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"

@@ -207,3 +207,15 @@ blockquote {
   justify-content: space-around;
   align-items: center;
 }
+
+.top {
+  display: flex;
+  justify-content: space-between;
+}
+.btn-delete {
+  background-color: rgb(240, 34, 34);
+  border: none;
+  border-radius: 12px;
+  height: 20px;
+  padding: 3px 5px;
+}

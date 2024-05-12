@@ -1,0 +1,26 @@
+<div id="step4" class="container" style="display: none;">
+    <h2><b>Projects</b></h2>
+    <div id="projectContainer">
+        <% s.projects.forEach((project,index)=>{ %>
+        <div class="form-group mb-2 project">
+            <label for="projectName" class="form-label">Project Name</label>
+            <input type="text" name="projects[<%= index %>][projectName]" class="form-control"
+                value="<%= project.projectName %>">
+            <label for="projectDescription" class="form-label">Project Description</label>
+            <textarea name="projects[<%= index %>][projectDescription]" class="form-control"><%= project.projectDescription %>
+            </textarea>
+            <label for="projectLink" class="form-label">Project Link</label>
+            <input type="url" name="projects[<%= index %>][projectLink]" class="form-control"
+                value="<%= project.projectLink %>">
+            <button class="mt-2 btn btn-danger removeProject">Remove</button>
+        </div>
+        <% }); %>
+    </div>
+    <div class="button-container mb-2">
+        <button id="addProject" type="button" class="btn btn-primary">Add Project</button>
+    </div>
+    <div class="button-container">
+        <button type="button" class="btn btn-primary" onclick="prevStep('step4')">Previous</button>
+        <button type="button" class="btn btn-primary" onclick="nextStep('step4')">Next</button>
+    </div>
+</div>

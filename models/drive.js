@@ -61,7 +61,11 @@ const driveSchema = new mongoose.Schema({
     author: {
         type: Schema.Types.ObjectId,
         ref: "Recruiter"
-    }
+    },
+    appliedStudents: [{
+        type: Schema.Types.ObjectId,
+        ref: "Student"
+    }]
 });
 const drive = mongoose.model('drive', driveSchema);
 

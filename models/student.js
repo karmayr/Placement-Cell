@@ -71,6 +71,26 @@ const studentSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: "User"
     },
+    applied_drives: [{
+        drive_id: {
+            type: Schema.Types.ObjectId,
+            ref: 'drive', // Reference to the Drive collection
+            // required: true
+        },
+        status: {
+            type: String,
+            enum: ['pending', 'accepted', 'rejected'],
+            default: 'not-applied',
+        },
+        applied: {
+            type: Boolean,
+            default: false
+        },
+        stage: {
+            type: Number,
+            default: 0
+        }
+    }]
 });
 
 const Student = mongoose.model('Student', studentSchema);

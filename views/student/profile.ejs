@@ -24,10 +24,10 @@
                         <p><b><%= s.personalDetails.fullName %></b></p>
                     </div>
                     <div class="details">
-                        <p>email@email.com</p>
-                        <p>Computer Engineering</p>
+                        <p><%= s.personalDetails.email %></p>
+                        <p><%= s.personalDetails.branch %></p>
                         <p>Government college of engineering Jalgaon</p>
-                        <p><b>Placement Status : </b></p>
+                        <p><b>Placement Status : </b> <%= s.personalDetails.placementStatus %></p>
                     </div>
 
 
@@ -36,6 +36,7 @@
                     <!-- resume link when viewing 
                     logout and edit for the user -->
                     <% if(currentUser.sID.equals(s._id)) {%>
+                    <a href="/dashboard" class="logout-btn">Dashboard</a>
                     <a href="/profile/<%= s._id %>/edit" class="logout-btn" role="button">Edit</a>
                     <a href="/logout" class="logout-btn">log out</a>
                     <% }else{ %>
@@ -47,27 +48,51 @@
             </section>
             <section class="lower">
                 <section class="skills">
-                    <p><b>Major Skills : <%= s.personalDetails.skills %></b></p>
+                    <p><b>Major Skills : </b><%= s.personalDetails.skills %></p>
                 </section>
                 <div class="inner-lower">
                     <section class="projects">
+                        <% if(s.projects.length < 1 && currentUser.sID.equals(s._id)){ %>
+                        <p>No projects tO show</p>
+                        <a href="/profile/<%= s._id %>/add-project" class="logout-btn" role="button">Add Projects</a>
+                        <% } else { %>
+                        <% for(project of s.projects){ %>
+
                         <div class="card">
-                            <p class="card-title">Project title</p>
-                            <p class="card-description">This is a simple card with a Project description.</p>
+                            <div class="top">
+                                <p class="card-title"><%= project.projectName %></p>
+                                <% if(currentUser.sID.equals(s._id)){ %>
+                                <form action="/project/<%= project._id %>/<%= s._id %>/delete?_method=DELETE"
+                                    method="post">
+                                    <button class="btn-delete">delete</button>
+                                </form>
+                                <% } %>
+                            </div>
+                            <p class="card-description"><%= project.projectDescription.substring(0, 90) %>...</p>
                         </div>
-                        <div class="card">
-                            <p class="card-title">Project title</p>
-                            <p class="card-description">This is a simple card with a Project description.</p>
-                        </div>
+                        <% } %>
+                        <% if(s.projects.length < 2 && currentUser.sID.equals(s._id) ){ %>
+                        <a href="/profile/<%= s._id %>/add-project" class="logout-btn" role="button">Add Projects</a>
+                        <% } %>
+                        <% } %>
                     </section>
                     <section class="socials">
-                        <i class="fa-brands fa-square-x-twitter fa-2xl" style="color: #050505;"></i>
-                        <i class="fa-brands fa-linkedin fa-2xl" style="color: #144366;"></i>
-                        <i class="fa-brands fa-square-github fa-2xl" style="color: #0f0f0f;"></i>
+                        <a href="<%= s.onlineProfiles.twitter %>">
+                            <i class="fa-brands fa-square-x-twitter fa-2xl" style="color: #050505;">
+                            </i></a>
+                        <a href="<%= s.onlineProfiles.linkedIn %>"> <i class="fa-brands fa-linkedin fa-2xl"
+                                style="color: #144366;">
+                            </i></a>
+                        <a href="<%= s.onlineProfiles.gitHub %>"> <i class="fa-brands fa-square-github fa-2xl"
+                                style="color: #0f0f0f;">
+                            </i></a>
+
+
                     </section>
                 </div>
             </section>
         </main>
+
     </body>
 
 </html>
