@@ -65,7 +65,15 @@ const driveSchema = new mongoose.Schema({
     appliedStudents: [{
         type: Schema.Types.ObjectId,
         ref: "Student"
-    }]
+    }],
+    status: {
+        type: String,
+        enum: ["active", "deactivated", "not-started"],
+        default: "not-started"
+    },
+    completedStages: {
+        type: [String]
+    }
 });
 const drive = mongoose.model('drive', driveSchema);
 

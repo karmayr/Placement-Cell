@@ -36,7 +36,7 @@ const recruiterSchema = new mongoose.Schema({
     author: {
         type: Schema.Types.ObjectId,
         ref: 'User'
-    }
+    },
 });
 
 const Recruiter = mongoose.model('Recruiter', recruiterSchema);

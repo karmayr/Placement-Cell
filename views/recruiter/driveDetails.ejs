@@ -19,18 +19,27 @@
                     <h2><%= currentDrive.companyName %></h2>
                 </li>
                 <li>
-                    <% if(currentDrive.author.equals(currentUser._id)) {%>
+                    <% if(currentDrive.author.equals(currentUser.Rid)) {%>
+                    <% if(currentDrive.status === 'deactivated'){ %>
+                    <div class="buttons">
+                        <button class="button" style="background-color: #878787;" disabled>Terminated</button>
+                    </div>
+                    <% }else{ %>
                     <div class="buttons">
                         <form action="/drive/<%= currentDrive._id %>?_method=DELETE" method="post">
                             <button class="button delete-button" type="submit" role="button">Delete</button>
                         </form>
                         <a href="/drive/<%= currentDrive._id %>/edit" class="button">Edit</a>
                     </div>
+                    <% } %>
+
                     <% } else if(currentDrive.appliedStudents.map(s => s.toString()).includes(currentUser.sID.toString())){%>
                     <div class="buttons">
                         <button disabled="disabled" class="btn btn-secondary px-3">Applied</button>
                         <a href="" class="btn  btn-info">Track Application</a>
                     </div>
+                    <% }else if(currentDrive.status === 'active'){%>
+                    <b><span class="fs-5">Applications to this drive are closed</span></b>
                     <% }else{ %>
                     <div class="buttons">
                         <form action="/apply/<%= currentDrive._id %>" method="post">
@@ -51,7 +60,7 @@
                         </p>
                         <p class="job-desc"><%= currentDrive.jobDescription %></p>
                     </section>
-                    <section class="eligibility-criteria">
+                    <!-- <section class="eligibility-criteria">
                         <p>Eligibility Criteria</p>
                         <ol>
                             <li>one</li>
@@ -59,7 +68,7 @@
                             <li>two</li>
                             <li>two</li>
                         </ol>
-                    </section>
+                    </section> -->
                     <!-- <section class="skills-required">
                         <p>skills here</p>
                     </section> -->

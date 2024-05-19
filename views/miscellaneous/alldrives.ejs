@@ -11,21 +11,13 @@
 
     <body>
         <%- include('../partials/navbar.ejs') %>
-        <main class=" container p-1  ">
+        <main class="container p-1">
             <%- include('../partials/flashPartials.ejs') %>
-            <% if(drives.length < 1){ %>
-            <div class="container d-flex justify-content-center align-items-center flex-column bg-body-secondary rounded-2"
-                style="height: calc(100vh - 150px);">
-                <h3>No On Going Drive Yet</h3>
-                <form action="#" class="text-start  ">
-                    <button type="submit" class="btn btn-info btn-sm">Notify Me</button>
-                    <p class="form-text">notify me when a drive gets started.</p>
-                </form>
-            </div>
-            <% }else{ %>
-            <h1>Upcoming Drives</h1>
+
+            <h1>All Drives</h1>
             <div class="container d-flex gap-3 flex-wrap">
-                <% for (drive of drives) {%>
+                <% drives.forEach((drive) => { %>
+                <!-- Render drives here -->
                 <div class="card" style="width: 18rem;">
                     <div class="card-body">
                         <h4 class="card-title"><%= drive.companyName %></h4>
@@ -38,13 +30,23 @@
                         <li class="list-group-item"><%= drive.driveDate.toDateString() %></li>
                     </ul>
                     <div class="card-body">
+
+                        <% if(drive.status === 'not-started'){ %>
+                        <button class="btn btn-sm btn-outline-secondary " disabled>Not Started</button>
+                        <% }else if(drive.status === 'active'){ %>
+                        <button class="btn btn-sm btn-outline-success  " disabled>Active</button>
+                        <% }else if(drive.status === 'deactivated'){%>
+                        <button class="btn btn-sm btn-outline-dark    " disabled>Terminated</button>
+                        <% } %>
+
+
                         <a href="/drive/<%= drive._id %>" class="btn btn-sm btn-primary float-end ">Read more</a>
                     </div>
                 </div>
-                <% } %>
+                <% }) %>
             </div>
-            <% } %>
         </main>
+
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>

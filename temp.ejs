@@ -1,26 +1,81 @@
-<div id="step4" class="container" style="display: none;">
-    <h2><b>Projects</b></h2>
-    <div id="projectContainer">
-        <% s.projects.forEach((project,index)=>{ %>
-        <div class="form-group mb-2 project">
-            <label for="projectName" class="form-label">Project Name</label>
-            <input type="text" name="projects[<%= index %>][projectName]" class="form-control"
-                value="<%= project.projectName %>">
-            <label for="projectDescription" class="form-label">Project Description</label>
-            <textarea name="projects[<%= index %>][projectDescription]" class="form-control"><%= project.projectDescription %>
-            </textarea>
-            <label for="projectLink" class="form-label">Project Link</label>
-            <input type="url" name="projects[<%= index %>][projectLink]" class="form-control"
-                value="<%= project.projectLink %>">
-            <button class="mt-2 btn btn-danger removeProject">Remove</button>
+<% for(drive of drives){ %>
+<div class="card" style="width: 18rem;">
+    <div class="card-body">
+        <%= drives.length %>
+        <h5 class="card-title"><%= drive.drive_id.companyName %></h5>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Next Round :
+                <%= drive.drive_id.selectionProcess[ drive.stage - 1 ] %> </li>
+        </ul>
+        <div class="card-footer">
+            <% if (drive.status === 'pending') { %>
+            <a href="#" class="btn btn-sm btn-secondary pending">Pending</a>
+            <% } else if(drive.status === 'accepted'){%>
+            <a href="#" class="btn btn-sm btn-success accepted">Accepted</a>
+            <% }else if(drive.status === 'rejected'){ %>
+            <a href="#" class="btn btn-sm btn-danger rejected">Rejected</a>
+            <% } %>
+
+            <a href="#" class="btn btn-info">Track</a>
         </div>
-        <% }); %>
-    </div>
-    <div class="button-container mb-2">
-        <button id="addProject" type="button" class="btn btn-primary">Add Project</button>
-    </div>
-    <div class="button-container">
-        <button type="button" class="btn btn-primary" onclick="prevStep('step4')">Previous</button>
-        <button type="button" class="btn btn-primary" onclick="nextStep('step4')">Next</button>
     </div>
 </div>
+<% } %>
+
+
+
+//R Profile
+//one
+<% if (Rid === s._id.toString()) { %>
+<a href="/dashboard" class="btn btn-primary mb-2">Dashboard</a>
+<a href="/profile/<%= s._id %>/edit" class="btn btn-secondary mb-2">Edit</a>
+<a href="/logout" class="btn btn-danger">Log out</a>
+<% } else { %>
+<button class="btn btn-info">Resume</button>
+<% } %>
+
+
+
+//All drive main
+<main class=" container p-1  ">
+    <%- include('../partials/flashPartials.ejs') %>
+    <% if(drives.length < 1){ %>
+    <div class="container d-flex justify-content-center align-items-center flex-column bg-body-secondary rounded-2"
+        style="height: calc(100vh - 150px);">
+        <h3>No On Going Drive Yet</h3>
+        <form action="#" class="text-start  ">
+            <button type="submit" class="btn btn-info btn-sm">Notify Me</button>
+            <p class="form-text">notify me when a drive gets started.</p>
+        </form>
+    </div>
+    <% }else{ %>
+    <h1>Upcoming Drives</h1>
+    <div class="container d-flex gap-3 flex-wrap">
+        <% for (drive of drives) {%>
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h4 class="card-title"><%= drive.companyName %></h4>
+                <h5 class="card-title"><%= drive.jobTitle %></h5>
+                <p class="card-text"><%= drive.jobDescription.substring(0, 50) %>...
+                </p>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><%= drive.salary %></li>
+                <li class="list-group-item"><%= drive.driveDate.toDateString() %></li>
+            </ul>
+            <div class="card-body">
+
+                <% if(drive.status === 'not-started'){ %>
+                <button class="btn btn-sm btn-outline-secondary " disabled>Not Started</button>
+                <% }else if(drive.status === 'active'){ %>
+                <button class="btn btn-sm btn-outline-success  " disabled>Active</button>
+                <% } %>
+
+
+                <a href="/drive/<%= drive._id %>" class="btn btn-sm btn-primary float-end ">Read more</a>
+            </div>
+        </div>
+        <% } %>
+    </div>
+    <% } %>
+</main>

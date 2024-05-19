@@ -19,6 +19,12 @@
         <div class="container  p-2 bg-body-secondary box mt-lg-2">
             <h1 class="mb-4">My Applied Drives</h1>
             <div class="cards p-3 d-flex justify-content-start gap-3 flex-wrap  align-items-center ">
+                <% if(drives.length < 1){ %>
+
+                <div class=" container d-flex justify-content-center align-items-center ">
+                    you have not yet applied, <a href="/drive/all" class="btn btn-sm btn-primary">apply here</a>
+                </div>
+                <% } else {%>
                 <% for(drive of drives){ %>
                 <div class="card" style="width: 18rem;">
                     <div class="card-body">
@@ -40,6 +46,7 @@
                         </div>
                     </div>
                 </div>
+                <% } %>
                 <% } %>
             </div>
 

@@ -18,7 +18,7 @@
                 <a href="/quiz" class="nav-link">Practice</a>
                 <% }else if(currentUser.identity === 'recruiter') {%>
                 <a class="nav-link" href="/drive/register">New Drive</a>
-                <a href="#" class="nav-link">Created Drives</a>
+                <a href="/recruiter/my-drives/<%= currentUser.Rid %>" class="nav-link">Created Drives</a>
                 <% }else if(currentUser.identity === 'admin'){ %>
                 <a class="nav-link" href="/admin/all">All students</a>
                 <a class="nav-link" href="#">Stats</a>
@@ -30,12 +30,17 @@
                 <a href="/register" class="btn btn-sm btn-info ">register</a>
                 <% }else{%>
                 <% if(!currentUser.registered){%>
-                <a href='<%= currentUser.identity %>/register'><img src="./images/defaultProfile.png"
+                <a href='/<%= currentUser.identity %>/register'><img src="/images/defaultProfile.png"
                         alt="Profile Picture" class="rounded-circle"
                         style="width: 40px; height: 40px; object-fit: cover;"></a>
-                <% }else{ %>
+                <% }else if(currentUser.sID){ %>
                 <a href="/profile/<%= currentUser.sID %>"><img
                         src="https://images.unsplash.com/photo-1483104879057-379b6c2fe5a2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8"
+                        alt="Profile Picture" class="rounded-circle"
+                        style="width: 40px; height: 40px; object-fit: cover;"></a>
+                <% }else if(currentUser.Rid){ %>
+                <a href="/profile/<%= currentUser.Rid %>"><img
+                        src="https://images.unsplash.com/photo-1598257006463-7c64a5a538cc?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cmVjcnVpdGVyfGVufDB8fDB8fHww"
                         alt="Profile Picture" class="rounded-circle"
                         style="width: 40px; height: 40px; object-fit: cover;"></a>
                 <% } %>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Profile Page</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+            integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+            crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="/css/rprofile.css">
+    </head>
+
+    <body>
+        <%- include('../partials/flashPartials.ejs') %>
+        <main class="main">
+            <section class="upper">
+                <div class="left-profile">
+                    <img src="https://images.unsplash.com/photo-1598257006463-7c64a5a538cc?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cmVjcnVpdGVyfGVufDB8fDB8fHww"
+                        alt="" class="profile-photo">
+                </div>
+                <div class="middle-profile">
+                    <div class="fullname">
+                        <p><b><%= r.companyName %></b></p>
+                    </div>
+                    <div class="details">
+                        <p></p>
+                        <p><%=  %></p>
+
+                    </div>
+
+
+                </div>
+                <div class="right-profile">
+                    <!-- resume link when viewing 
+                    logout and edit for the user -->
+                    <% if (Rid === r._id.toString()) { %>
+                    <a href="/dashboard" class="logout-btn">Dashboard</a>
+                    <!-- <a href="/profile//edit" class="logout-btn">Edit</a> -->
+                    <a href="/logout" class="logout-btn">Log out</a>
+                    <% }  %>
+                </div>
+            </section>
+            <section class="lower">
+                <div class="left">
+                    <h3>About Company</h3>
+                    <p class="companyDesc">
+                        <%= r.companyDescription %>
+                    </p>
+                </div>
+                <div class="right">
+                    <a href="" class="logout-btn">Visit Website</a>
+                </div>
+            </section>
+        </main>
+
+    </body>
+
+</html>
+
+
+<!-- HTML !-->

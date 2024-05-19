@@ -35,7 +35,7 @@
                 <div class="right-profile">
                     <!-- resume link when viewing 
                     logout and edit for the user -->
-                    <% if(currentUser.sID.equals(s._id)) {%>
+                    <% if(Sid === s._id.toString() ) {%>
                     <a href="/dashboard" class="logout-btn">Dashboard</a>
                     <a href="/profile/<%= s._id %>/edit" class="logout-btn" role="button">Edit</a>
                     <a href="/logout" class="logout-btn">log out</a>
@@ -52,7 +52,7 @@
                 </section>
                 <div class="inner-lower">
                     <section class="projects">
-                        <% if(s.projects.length < 1 && currentUser.sID.equals(s._id)){ %>
+                        <% if(s.projects.length < 1 && Sid === s._id.toString()){ %>
                         <p>No projects tO show</p>
                         <a href="/profile/<%= s._id %>/add-project" class="logout-btn" role="button">Add Projects</a>
                         <% } else { %>
@@ -61,7 +61,7 @@
                         <div class="card">
                             <div class="top">
                                 <p class="card-title"><%= project.projectName %></p>
-                                <% if(currentUser.sID.equals(s._id)){ %>
+                                <% if(Sid === s._id.toString()){ %>
                                 <form action="/project/<%= project._id %>/<%= s._id %>/delete?_method=DELETE"
                                     method="post">
                                     <button class="btn-delete">delete</button>
@@ -71,7 +71,7 @@
                             <p class="card-description"><%= project.projectDescription.substring(0, 90) %>...</p>
                         </div>
                         <% } %>
-                        <% if(s.projects.length < 2 && currentUser.sID.equals(s._id) ){ %>
+                        <% if(s.projects.length < 2 && Sid === s._id.toString() ){ %>
                         <a href="/profile/<%= s._id %>/add-project" class="logout-btn" role="button">Add Projects</a>
                         <% } %>
                         <% } %>
