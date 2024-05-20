@@ -23,21 +23,21 @@ const Notification = require("./models/notification.js");
 const { storage } = require("./cloudinary/app.js");
 //multer
 const multer = require('multer')
-// const upload = multer({ storage });
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ storage });
+// const upload = multer({ dest: "uploads/" });
 const flash = require('connect-flash');
 
 const passport = require('passport');
 const passportLocal = require('passport-local');
-const { isLoggedIn, isRegistered } = require('./utilities/middleware.js');
+const { isLoggedIn, isRegistered, isStudent, isRecruiter } = require('./utilities/middleware.js');
 const mailer = require("./utilities/mailer.js");
-const { genrateOtp, otpTimeout, otpExpiryFiveMin } = require("./utilities/helper.js");
+const { genrateOtp, otpTimeout, otpExpiryFiveMin, separateDateTime } = require("./utilities/helper.js");
 const randomString = require('randomstring');
 
 const cron = require('node-cron');
 
 
-mongoose.connect('mongodb://127.0.0.1:27017/TestDB')
+mongoose.connect('mongodb://127.0.0.1:27017/Placement-Cell')
     .then(() => {
         console.log("Database active");
     }
@@ -111,8 +111,12 @@ app.get("/", (req, res) => {
     res.render('./LandingPages/index.ejs');
 })
 
+app.get("/about-us", (req, res) => {
+    res.render("./miscellaneous/aboutUs.ejs");
+})
+
 app.get('/dashboard', isLoggedIn, catchAsync(async (req, res, next) => {
-    let drives = await Drive.find({ status: 'active' });
+    let drives = await Drive.find({ status: 'not-started' });
     drives = drives.slice(0, 3);
     if (req.user.identity === 'recruiter') {
         var rec_drives = await Drive.find({ author: req.user.Rid });
@@ -142,7 +146,7 @@ app.post("/student/register", isLoggedIn, isRegistered, upload.single("image"), 
         onlineProfiles: onlineProfiles, projects: projects,
         author: req.user._id
     });
-    // newStudent.personalDetails.profilePhoto = ({ url: req.file.path, filename: req.file.filename })
+    newStudent.personalDetails.profilePhoto = ({ url: req.file.path, filename: req.file.filename })
     const success = await newStudent.save();
     if (!success) {
         req.flash('error', 'There was something wrong, Try again')
@@ -169,17 +173,21 @@ app.get('/profile/:id', isLoggedIn, catchAsync(async (req, res, next) => {
 }));
 
 
-app.get('/profile/:id/edit', isLoggedIn, catchAsync(async (req, res, next) => {
+app.get('/profile/:id/edit', isLoggedIn, isStudent, catchAsync(async (req, res, next) => {
     const student = await Student.findById(req.params.id);
+    if (!student._id.equals(req.user.sID)) {
+        req.flash("error", "UnAuthorized Action");
+        return res.redirect('/dashboard')
+    }
     res.render("./miscellaneous/studentEditPage.ejs", { s: student });
 }));
 
 
-app.get('/profile/:id/add-project', isLoggedIn, catchAsync(async (req, res, next) => {
+app.get('/profile/:id/add-project', isLoggedIn, isStudent, catchAsync(async (req, res, next) => {
     const sid = req.params.id;
     res.render("./student/addProjects.ejs", { sid });
 }));
-app.post('/profile/:id/add-project', isLoggedIn, catchAsync(async (req, res, next) => {
+app.post('/profile/:id/add-project', isLoggedIn, isStudent, catchAsync(async (req, res, next) => {
     const id = req.params.id;
     const project = req.body.project;
     await Student.findByIdAndUpdate(id, { $push: { projects: project } });
@@ -187,39 +195,54 @@ app.post('/profile/:id/add-project', isLoggedIn, catchAsync(async (req, res, nex
 }));
 
 
-app.delete("/project/:pid/:sid/delete", catchAsync(async (req, res, next) => {
+app.delete("/project/:pid/:sid/delete", isLoggedIn, isStudent, catchAsync(async (req, res, next) => {
     const { pid, sid } = req.params;
+    if (sid != req.user.sID.toString()) {
+        req.flash("error", "UnAuthorized Action");
+        return res.redirect('/dashboard')
+    }
     const student = await Student.findByIdAndUpdate(sid, { $pull: { projects: { _id: pid } } });
     res.redirect(`/profile/${sid}`)
 }));
-app.put('/profile/:id', isLoggedIn, upload.single('image'), catchAsync(async (req, res, next) => {
+
+app.put('/profile/:id', isLoggedIn, upload.single('image'), isStudent, catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const {
         personalDetails, entryStatus, education, experiences, onlineProfiles, projects
     } = req.body;
 
-    const student = await Student.findByIdAndUpdate(id, {
+    // if (!student._id.equals(req.user.sID)) {
+    //     req.flash("error", "UnAuthorized Action");
+    //     return res.redirect('/dashboard')
+    // }
+
+    const student = await Student.findById(id);
+    student.personalDetails.profilePhoto = ({ url: req.file.path, filename: req.file.filename })
+    student.save();
+    await Student.findByIdAndUpdate(id, {
         personalDetails: personalDetails, entryStatus: entryStatus,
         education: education, experiences: experiences,
-        onlineProfiles: onlineProfiles, projects: projects
+        onlineProfiles: onlineProfiles, projects: projects,
     });
-    await student.save();
+
+
     req.flash('success', 'Changes made successfully');
     res.redirect(`/profile/${req.params.id}`);
 }));
 
-app.get('/quiz', isLoggedIn, (req, res, next) => {
+app.get('/quiz', isLoggedIn, isStudent, (req, res, next) => {
     res.render('./miscellaneous/quiz.ejs');
 });
 
-app.post('/apply/:drive_id', isLoggedIn, catchAsync(async (req, res, next) => {
+app.post('/apply/:drive_id', isLoggedIn, isStudent, catchAsync(async (req, res, next) => {
     const drive_id = req.params.drive_id
 
-    const drive = await Drive.findById(drive_id);
-    if (drive.status === 'active') {
-        req.flash('error', 'Applications are Closed');
-        return res.redirect(`/drive/${drive.id}`);
+    const d = Drive.findById(drive_id);
+    if (d.status === 'active') {
+        req.flash('error', 'Applications are closed');
+        return res.redirect(`/drive/${drive_id}`);
     }
+
     const student = await Student.findByIdAndUpdate(req.user.sID, {
         $push: {
             applied_drives: {
@@ -230,21 +253,40 @@ app.post('/apply/:drive_id', isLoggedIn, catchAsync(async (req, res, next) => {
             }
         }
     })
-    await Drive.updateOne(drive_id, { $push: { appliedStudents: student._id } });
+    const drive = await Drive.findByIdAndUpdate(drive_id, { $push: { appliedStudents: student._id } });
     student.save();
     drive.save();
     req.flash('success', 'Applied for Drive')
     res.redirect(`/drive/${drive._id}`)
 }));
 
-app.get('/dashboard/applied-drives/:id', catchAsync(async (req, res, next) => {
+app.get('/dashboard/applied-drives/:id', isLoggedIn, isStudent, catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const student = await Student.findById(id).populate('applied_drives.drive_id');
     const drives = student.applied_drives;
-    console.log(drives)
     res.render('./student/appliedDrives.ejs', { drives });
 }));
 
+app.get('/dashboard/events/:id', isLoggedIn, catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    const student = await Student.findById(id).populate('applied_drives.drive_id');
+
+    // Extract all events from the drives
+    const allEvents = [];
+    student.applied_drives.forEach(drive => {
+        drive.drive_id.Events.forEach(event => {
+            const eventWithCompany = {
+                eventName: event.eventName,
+                eventDate: event.eventDate,
+                eventMessage: event.eventMessage,
+                companyName: drive.drive_id.companyName
+            };
+            allEvents.push(eventWithCompany);
+        });
+    });
+    res.render('./student/events.ejs', { allEvents });
+
+}));
 
 
 
@@ -265,10 +307,10 @@ app.get('/dashboard/applied-drives/:id', catchAsync(async (req, res, next) => {
 
 
 //* Recruiter Routes
-app.get('/recruiter/register', isLoggedIn, (req, res, next) => {
+app.get('/recruiter/register', isLoggedIn, isRecruiter, (req, res, next) => {
     res.render('./recruiter/registerRecruiter.ejs');
 })
-app.post('/recruiter/register', isLoggedIn, catchAsync(async (req, res, next) => {
+app.post('/recruiter/register', isLoggedIn, isRecruiter, catchAsync(async (req, res, next) => {
     const { companyName, companyWebsite, companyDescription,
         recruiterName, recruiterTitle,
         recruiterPhoneNumber, recruiterEmail } = req.body;
@@ -290,30 +332,52 @@ app.post('/recruiter/register', isLoggedIn, catchAsync(async (req, res, next) =>
     req.flash('success', 'Registration Compeleted Successfully');
     res.redirect('/');
 }));
-app.get('/drive/:id/applications', catchAsync(async (req, res, next) => {
+app.get('/drive/:id/applications', isLoggedIn, isRecruiter, catchAsync(async (req, res, next) => {
     const drive_id = req.params.id;
     const drive = await Drive.findById(drive_id).populate('appliedStudents');
     const applied_students = drive.appliedStudents;
     res.render('./recruiter/jobApplications.ejs', { applied_students });
 }))
 
-app.get('/recruiter/my-drives/:id', catchAsync(async (req, res, next) => {
+app.get('/recruiter/my-drives/:id', isLoggedIn, isRecruiter, catchAsync(async (req, res, next) => {
     const Rid = req.params.id;
     const myDrives = await Drive.find({ author: Rid });
     res.render('./recruiter/myCreatedDrives.ejs', { myDrives });
 }));
 
-app.get('/recruiter/add-event/:rid', catchAsync(async (req, res, next) => {
+app.get('/recruiter/add-event/:rid', isLoggedIn, isRecruiter, catchAsync(async (req, res, next) => {
     const { rid } = req.params;
     const myDrives = await Drive.find({ author: rid, status: 'active' });
     res.render('./recruiter/add-event.ejs', { myDrives });
 }));
 
-app.post('/recruiter/add-event/:rid', catchAsync(async (req, res, next) => {
-    res.send(req.body);
+app.post('/recruiter/add-event/:rid', isLoggedIn, isRecruiter, catchAsync(async (req, res, next) => {
+    const { round, message, date, driveId } = req.body;
+    const dateAndTime = separateDateTime(date);
+
+    console.log(dateAndTime.date, dateAndTime.time);
+
+    const event = {
+        eventName: round,
+        eventDate: dateAndTime.date + " " + dateAndTime.time,
+        eventMessage: message
+    }
+
+    const drive = await Drive.findByIdAndUpdate(driveId, { $push: { Events: event } }, { new: true });
+    console.log(req.body);
+    console.log(drive)
+    res.redirect('/dashboard')
 }));
 
-app.get('/drive/:id/start', catchAsync(async (req, res, next) => {
+app.delete("/event/:eid/:did", isLoggedIn, isRecruiter, catchAsync(async (req, res, next) => {
+    const { eid, did } = req.params;
+    await Drive.findByIdAndUpdate(did, { $pull: { Events: { _id: eid } } });
+    req.flash("success", "Event deleted ");
+    res.redirect('/dashboard')
+}))
+
+
+app.get('/drive/:id/start', isLoggedIn, isRecruiter, catchAsync(async (req, res, next) => {
     const rid = req.user.Rid;
     const id = req.params.id;
     const drive = await Drive.findByIdAndUpdate(id, { status: 'active' });
@@ -330,7 +394,7 @@ app.get('/drive/:id/start', catchAsync(async (req, res, next) => {
     res.redirect(`/recruiter/my-drives/${rid}`)
 }));
 
-app.get('/drive/:id/stop', catchAsync(async (req, res, next) => {
+app.get('/drive/:id/stop', isLoggedIn, isRecruiter, catchAsync(async (req, res, next) => {
     const rid = req.user.Rid;
     const id = req.params.id;
     await Drive.findByIdAndUpdate(id, { status: 'deactivated' });
@@ -349,10 +413,10 @@ app.get('/drive/:id/stop', catchAsync(async (req, res, next) => {
 
 
 //* Drive Routes
-app.get('/drive/register', isLoggedIn, (req, res, next) => {
+app.get('/drive/register', isLoggedIn, isRecruiter, (req, res, next) => {
     res.render("./recruiter/registerDetails.ejs");
 })
-app.post('/drive/register', isLoggedIn, catchAsync(async (req, res, next) => {
+app.post('/drive/register', isLoggedIn, isRecruiter, catchAsync(async (req, res, next) => {
     const { companyName, jobTitle, driveDate, requiredSkills, jobDescription,
         salaryRange, eligibilityCriteria,
         location, numberOfStages, selectionProcess, contactEmail,
@@ -378,7 +442,7 @@ app.post('/drive/register', isLoggedIn, catchAsync(async (req, res, next) => {
     await notif.save();
 
     req.flash('success', 'Drive created successfully');
-    res.redirect("/");
+    res.redirect("/dashboard");
 }))
 
 // app.get('/drive/all', isLoggedIn, catchAsync(async (req, res, next) => {
@@ -389,16 +453,19 @@ app.get('/drive/all', isLoggedIn, catchAsync(async (req, res, next) => {
     let drives = await Drive.find({});
     // Separate active drives from remaining drives
     let activeDrives = [];
+    let openForApplications = [];
     let remainingDrives = [];
     drives.forEach(drive => {
         if (drive.status === 'active') {
             activeDrives.push(drive);
+        } else if (drive.status === 'not-started') {
+            openForApplications.push(drive);
         } else {
             remainingDrives.push(drive);
         }
     });
     // Combine active drives and remaining drives
-    let allDrives = activeDrives.concat(remainingDrives);
+    let allDrives = activeDrives.concat(openForApplications).concat(remainingDrives);
     // Render the template with all drives
     res.render("./miscellaneous/alldrives.ejs", { drives: allDrives });
 }));
@@ -415,6 +482,10 @@ app.get('/drive/:id', isLoggedIn, catchAsync(async (req, res, next) => {
 app.get('/drive/:id/edit', isLoggedIn, catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const drive = await Drive.findById(id);
+    if (!drive.author.equals(req.user.Rid)) {
+        req.flash("error", "UnAuthorized Action");
+        return res.redirect('/dashboard')
+    }
     res.render('./recruiter/editDrive.ejs', { drive });
 }));
 app.put("/drive/:id", isLoggedIn, catchAsync(async (req, res, next) => {
@@ -440,6 +511,11 @@ app.put("/drive/:id", isLoggedIn, catchAsync(async (req, res, next) => {
 }));
 app.delete('/drive/:id', isLoggedIn, catchAsync(async (req, res, next) => {
     const { id } = req.params;
+    const drive = await Drive.findById(id);
+    if (!drive.author.equals(req.user.Rid)) {
+        req.flash("error", "UnAuthorized Action");
+        return res.redirect('/dashboard')
+    }
     await Drive.findByIdAndDelete(id);
     req.flash('success', "Drive deleted successfully");
     res.redirect('/drive/all');
@@ -505,7 +581,7 @@ app.post('/register', catchAsync(async (req, res, next) => {
         res.redirect('/register');
     }
 }));
-app.get('/logout', (req, res, next) => {
+app.get('/logout', isLoggedIn, (req, res, next) => {
     req.logout((err) => {
         if (err) return next(err);
     });

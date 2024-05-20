@@ -14,6 +14,10 @@
         <main class="container p-1">
             <%- include('../partials/flashPartials.ejs') %>
 
+
+            <% if(drives.length < 1){ %>
+            <span><b>Chill out, Placement Season not here yet.</b></span>
+            <% }else{ %>
             <h1>All Drives</h1>
             <div class="container d-flex gap-3 flex-wrap">
                 <% drives.forEach((drive) => { %>
@@ -32,7 +36,7 @@
                     <div class="card-body">
 
                         <% if(drive.status === 'not-started'){ %>
-                        <button class="btn btn-sm btn-outline-secondary " disabled>Not Started</button>
+                        <button class="btn btn-sm btn-outline-warning  " disabled>Open for Application</button>
                         <% }else if(drive.status === 'active'){ %>
                         <button class="btn btn-sm btn-outline-success  " disabled>Active</button>
                         <% }else if(drive.status === 'deactivated'){%>
@@ -45,6 +49,7 @@
                 </div>
                 <% }) %>
             </div>
+            <% } %>
         </main>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

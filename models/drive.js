@@ -73,7 +73,20 @@ const driveSchema = new mongoose.Schema({
     },
     completedStages: {
         type: [String]
-    }
+    },
+    Events: [
+        {
+            eventName: { type: String },
+            eventDate: { type: String },
+            eventMessage: { type: String },
+            status: {
+                type: String,
+                enum: ["Ongoing", "Completed", "Scheduled"],
+                default: "Scheduled"
+            },
+            createdAt: { type: Date, default: Date.now }
+        }
+    ]
 });
 const drive = mongoose.model('drive', driveSchema);
 

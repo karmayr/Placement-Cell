@@ -1,3 +1,5 @@
+
+
 module.exports.isLoggedIn = (req, res, next) => {
     if (!req.isAuthenticated()) {
         req.flash('error', 'login Required');
@@ -13,6 +15,21 @@ module.exports.isRegistered = (req, res, next) => {
     if (req.user.identity !== 'student') {
         req.flash('error', "Sorry You are not a Student,Contact Admin if you are");
         return res.redirect('/dashboard');
+    }
+    next();
+}
+
+module.exports.isStudent = (req, res, next) => {
+    if (req.user.identity != 'student') {
+        req.flash('error', "Not authorized to do this.");
+        res.redirect('/dashboard');
+    }
+    next();
+}
+module.exports.isRecruiter = (req, res, next) => {
+    if (req.user.identity != 'recruiter') {
+        req.flash('error', "Not authorized to do this.");
+        res.redirect('/dashboard');
     }
     next();
 }

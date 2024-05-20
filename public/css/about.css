@@ -1,0 +1,112 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap");
+
+body {
+  font-family: "Nunito";
+  margin: 0;
+  position: absolute;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+.row {
+  height: 100%;
+  padding-top: 2rem;
+  width: 80%;
+  margin: 0 10%;
+}
+
+.column {
+  float: left;
+  width: 25%;
+  margin-bottom: 16px;
+  padding: 0 8px;
+}
+
+.card {
+  position: relative;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  margin: 8px;
+  height: 20rem;
+  transition: 0.7s ease-in-out;
+}
+
+.card:hover {
+  box-shadow: 0px 4px 8px 0px rgba(102, 101, 101, 0.495);
+  background-color: lightgrey;
+  transform: translate(0, -15px);
+}
+
+.about-section {
+  padding: 50px;
+  text-align: center;
+  background-color: #474e5d;
+  color: white;
+}
+
+.container {
+  text-align: center;
+  padding: 0 16px;
+}
+
+.container::after,
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.container h2 {
+  padding-top: 1rem;
+}
+
+.title {
+  color: rgb(128, 128, 128);
+}
+
+.contact {
+  text-align: center;
+  padding-bottom: 1rem;
+}
+
+.contact a {
+  padding-left: 0.5rem;
+  text-decoration: none !important;
+  font-size: 30px;
+}
+
+.button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 8px;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+}
+
+.button:hover {
+  background-color: #555;
+}
+
+.footer {
+  position: relative;
+  bottom: 0;
+  background-color: #000;
+}
+
+@media screen and (max-width: 650px) {
+  .column {
+    width: 100%;
+    display: block;
+  }
+}

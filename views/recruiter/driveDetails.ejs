@@ -19,34 +19,29 @@
                     <h2><%= currentDrive.companyName %></h2>
                 </li>
                 <li>
-                    <% if(currentDrive.author.equals(currentUser.Rid)) {%>
-                    <% if(currentDrive.status === 'deactivated'){ %>
+
                     <div class="buttons">
+                        <% if (currentDrive.status === 'deactivated') { %>
                         <button class="button" style="background-color: #878787;" disabled>Terminated</button>
-                    </div>
-                    <% }else{ %>
-                    <div class="buttons">
+                        <% } else if (currentDrive.appliedStudents.includes(currentUser.sID)) { %>
+                        <button disabled="disabled" class="btn btn-secondary px-3">Applied</button>
+                        <a href="" class="btn btn-info">Track Application</a>
+                        <% } else if (currentDrive.author.equals(currentUser.Rid)) { %>
                         <form action="/drive/<%= currentDrive._id %>?_method=DELETE" method="post">
                             <button class="button delete-button" type="submit" role="button">Delete</button>
                         </form>
                         <a href="/drive/<%= currentDrive._id %>/edit" class="button">Edit</a>
-                    </div>
-                    <% } %>
-
-                    <% } else if(currentDrive.appliedStudents.map(s => s.toString()).includes(currentUser.sID.toString())){%>
-                    <div class="buttons">
-                        <button disabled="disabled" class="btn btn-secondary px-3">Applied</button>
-                        <a href="" class="btn  btn-info">Track Application</a>
-                    </div>
-                    <% }else if(currentDrive.status === 'active'){%>
-                    <b><span class="fs-5">Applications to this drive are closed</span></b>
-                    <% }else{ %>
-                    <div class="buttons">
+                        <% } else  if (currentDrive.status === 'active') { %>
+                        <b><span class="fs-5">Applications to this drive are closed</span></b>
+                        <% } else if(currentUser.identity === 'recruiter'){ %>
+                        <% }else{ %>
                         <form action="/apply/<%= currentDrive._id %>" method="post">
-                            <button class="button " role="button">Apply</button>
+                            <button class="button" role="button">Apply</button>
                         </form>
+                        <% } %>
                     </div>
-                    <% } %>
+
+
                 </li>
             </div>
 

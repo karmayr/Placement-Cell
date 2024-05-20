@@ -25,7 +25,7 @@
                             <div class="card">
                                 <div class="card-body">
                                     <h5 class="card-title">Notifications</h5>
-                                    <% if(student_notifications.length < 1){ %>
+                                    <% if(student_notifications.length < 1 && global_notif_students.length < 1){ %>
                                     <span>No New Notifications</span>
                                     <% }else{ %>
                                     <ul class="list-group">
@@ -34,10 +34,7 @@
                                                 class="badge text-bg-danger">New</span></li>
                                         <% }) %>
                                     </ul>
-                                    <% } %>
-                                    <% if(global_notif_students.length < 1){ %>
-                                    <span>No New Notifications</span>
-                                    <% }else{ %>
+
                                     <ul class="list-group">
                                         <% global_notif_students.forEach(s=>{ %>
                                         <li class="list-group-item"><%= s.message %> <span
@@ -91,8 +88,8 @@
                                                     Drive-<%= index+1 %>
                                                     <%= d.companyName %>
                                                     <%= d.driveDate.toDateString() %>
-                                                    <button class="btn btn-sm btn-outline-success float-end  "
-                                                        disabled>Active</button>
+                                                    <button class="btn btn-sm btn-outline-warning  float-end  "
+                                                        disabled>open For Application</button>
                                                 </a>
                                                 <% }) %>
                                             </div>
@@ -110,6 +107,7 @@
 
                 <!-- Admin Dashboard  -->
                 <div class="container-fluid mt-4">
+                    <%- include('../partials/flashPartials.ejs') %>
                     <div class="row">
                         <div class="col-md-3">
                             <!-- Side navigation -->
@@ -177,6 +175,7 @@
 
                 <!-- Recruiter Dashboard  -->
                 <div class="container mt-4">
+                    <%- include('../partials/flashPartials.ejs') %>
                     <div class="row">
                         <div class="col-md-7">
                             <div class="card">
@@ -209,11 +208,7 @@
                                                 <td>
                                                     <a href="/drive/<%= drive._id  %>/applications"
                                                         class="btn btn-sm btn-primary">View Applications</a>
-                                                    <% if(drive.status === 'not-started'){%>
-                                                    <button class="btn btn-sm btn-success ">Start</button>
-                                                    <% }else if(drive.status === 'active'){ %>
-                                                    <button class="btn btn-sm btn-warning ">Stop</button>
-                                                    <% } %>
+
                                                 </td>
                                             </tr>
                                             <% }) %>
@@ -279,16 +274,22 @@
                                             <tbody>
 
 
-                                                <!-- <tr>
-                                                    <td>Mock Interview Session</td>
-                                                    <td>2024-05-15</td>
-                                                    <td>Upcoming</td>
+                                                <% rec_drives.forEach(d=>{ %>
+                                                <% d.Events.forEach(e=>{ %>
+                                                <tr>
+                                                    <td><%= e.eventName %></td>
+                                                    <td><%= e.eventDate %></td>
+                                                    <td><%= e.status %></td>
                                                     <td>
-                                                        <button class="btn btn-sm btn-primary">View Details</button>
-                                                        <button class="btn btn-sm btn-warning">Edit</button>
-                                                        <button class="btn btn-sm btn-danger">Delete</button>
+                                                        <form action="/event/<%= e._id %>/<%= d._id %>?_method=DELETE"
+                                                            method="post">
+                                                            <button class="btn btn-sm btn-danger">Delete</button>
+                                                        </form>
                                                     </td>
-                                                </tr> -->
+                                                </tr>
+                                                <% }) %>
+                                                <% }) %>
+
 
 
 
