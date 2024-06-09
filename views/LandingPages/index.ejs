@@ -29,10 +29,11 @@
 
     <body class="bg-body" data-bs-spy="scroll" data-bs-target="#navbar" data-bs-root-margin="0px 0px -40%"
         data-bs-smooth-scroll="true" tabindex="0">
-        <%- include('../partials/flashPartials.ejs') %>
+
         <% if(currentUser && currentUser.isVerified == false){ %>
         <%- include('../partials/emailVerifyLink.ejs') %>
         <% } %>
+        <%- include('../partials/flashPartials.ejs') %>
         <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
             <symbol xmlns="http://www.w3.org/2000/svg" id="arrow-left" viewBox="0 0 32 32">
                 <path fill="currentColor"
