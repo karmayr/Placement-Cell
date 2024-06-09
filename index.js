@@ -23,8 +23,8 @@ const Notification = require("./models/notification.js");
 const { storage } = require("./cloudinary/app.js");
 //multer
 const multer = require('multer')
-const upload = multer({ storage });
-// const upload = multer({ dest: "uploads/" });
+// const upload = multer({ storage });
+const upload = multer({ dest: "uploads/" });
 const flash = require('connect-flash');
 
 const passport = require('passport');
